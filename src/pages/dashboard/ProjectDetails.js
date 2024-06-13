@@ -53,16 +53,19 @@ export const ProjectDetails = () => {
   //dispatch(getProjectTasks(project.payload.id));
 
   const { tasks, isLoading } = useSelector((store) => store.currentProject);
-  //console.log('les taches');
-  //console.log(tasks);
   const membersDup = useSelector((store) => store.currentProject).members;
-  // [...project.payload.members];
   const members = membersDup.filter(
     (item, index) => membersDup.findIndex((i) => i.id === item.id) === index
   );
-  //console.log(members);
+  console.log(members ,"this is member inside project detail --- ");
 
   const [taskData, setTaskData] = useState(tasks);
+  const [title, setTitle] = useState("");
+  const [assignee, setAssignee] = useState("");
+  const [deadline, setDeadline] = useState(null);
+  const [addMemberFormIsOpen, setAddMemberFormIsOpen] = useState(false);
+  const [emailToAdd, setEmailToAdd] = useState("");
+
 
   const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
     const info = { idTask: cardId, newState: targetLaneId };
@@ -73,13 +76,14 @@ export const ProjectDetails = () => {
 
     //setTaskData(mapData(tasks));
   };
-  let navigate = useNavigate();
 
   const getProgress = () => {
     return Math.round(
       tasks.reduce((total, task) => total + task.progress, 0) / tasks.length
     );
   };
+
+
   //modal
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState({});
@@ -104,20 +108,29 @@ export const ProjectDetails = () => {
     setAssignee("");
     setDeadline(null);
   };
+
   const addNewTask = () => {
+    const selectedMember = members.find(
+      (m) => m.name.toLowerCase().trim() === assignee.toLowerCase().trim()
+    );
+
     const newTask = {
       title,
-      responsibleId: members.find((m) => m.name == assignee).id,
+      responsibleId:selectedMember.memberId,
+      // responsibleId: uniqueMembers.find((m) => m.name === assignee).memberId,
       deadline,
       projectId: project.payload.id,
     };
     dispatch(createTask(newTask));
   };
-  const [title, setTitle] = useState("");
-  const [assignee, setAssignee] = useState("");
-  const [deadline, setDeadline] = useState(null);
-  const [addMemberFormIsOpen, setAddMemberFormIsOpen] = useState(false);
-  const [emailToAdd, setEmailToAdd] = useState("");
+
+  console.log(assignee,"assignee 129")
+
+  let b = members.find((m) => m.name == assignee)
+    console.log(b,"assignee 130") 
+
+
+
   function toggleAddMemberForm() {
     setAddMemberFormIsOpen(!addMemberFormIsOpen);
   }

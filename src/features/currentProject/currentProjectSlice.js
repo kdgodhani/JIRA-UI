@@ -43,7 +43,7 @@ export const getProjectTasks = createAsyncThunk(
 export const getCurrentTask = createAsyncThunk(
   "allTasks/getCurrentTask",
   async (taskId, thunkAPI) => {
-    let url = `/taches/tacheCourante/${taskId}`;
+    let url = `/tasks/tacheCourante/${taskId}`;
 
     try {
       const resp = await customFetch.get(url);
@@ -70,11 +70,33 @@ export const addMemberToProject = createAsyncThunk(
   }
 );
 
+
+export const createTask = createAsyncThunk(
+  "tasks/addNewTask",
+  async (task, thunkAPI) => {
+    const tasks = {
+      title: task.title,
+      deadLine: task.deadline.toISOString(),
+      memeberId: task.responsableId,
+      projetId: task.projectId,
+    };
+
+    let url = `/tasks/create`;
+
+    try {
+      const resp = await customFetch.post(url, tasks);
+
+      return resp.data;
+    } catch (error) {
+      return checkForUnauthorizedResponse(error, thunkAPI);
+    }
+  }
+);
 export const updateTaskState = createAsyncThunk(
   "allTasks/updateTaskState",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/modifierEtat", info);
+      const resp = await customFetch.post("/tasks/modifierEtat", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -85,7 +107,7 @@ export const updateTaskTitle = createAsyncThunk(
   "allTasks/updateTaskTitle",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/modifierTitre", info);
+      const resp = await customFetch.post("/tasks/modifierTitre", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -96,7 +118,7 @@ export const updateTaskDesc = createAsyncThunk(
   "allTasks/updateTaskDesc",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/modifierDescription", info);
+      const resp = await customFetch.post("/tasks/modifierDescription", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -107,7 +129,7 @@ export const updateTaskProgress = createAsyncThunk(
   "allTasks/updateTaskProgress",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/modifierAvancement", info);
+      const resp = await customFetch.post("/tasks/modifierAvancement", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -118,7 +140,7 @@ export const addCommentToTask = createAsyncThunk(
   "allTasks/addComment",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/commenterTache", info);
+      const resp = await customFetch.post("/tasks/commenterTache", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -130,35 +152,14 @@ export const updateTaskDeadLine = createAsyncThunk(
   "allTasks/updateTaskDeadLine",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/taches/modifierDeadLine", info);
+      const resp = await customFetch.post("/tasks/modifierDeadLine", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
-export const createTask = createAsyncThunk(
-  "tasks/addNewTask",
-  async (task, thunkAPI) => {
-    const tache = {
-      titre: task.title,
-      deadLine: task.deadline.toISOString(),
-      responsableId: task.responsableId,
-      projetId: task.projectId,
-    };
-    //console.log('tacheEnv');
-    //console.log(tache.titre);
-    let url = `/taches/create`;
 
-    try {
-      const resp = await customFetch.post(url, tache);
-
-      return resp.data;
-    } catch (error) {
-      return checkForUnauthorizedResponse(error, thunkAPI);
-    }
-  }
-);
 /* const { allProjects } = useSelector((store) => store.allProjects);
 export const getCurrentProject = (projectId) => {
   return allProjects.find((p) => p.id == projectId);
@@ -214,14 +215,16 @@ const currentProjectSlice = createSlice({
       })
       .addCase(getProjectTasks.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.tasks = payload.taches;
+        state.tasks = payload.tasks;
 
-        console.log(payload.taches);
+        console.log(payload.tasks);
       })
       .addCase(getProjectTasks.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload);
       })
+
+
       .addCase(addMemberToProject.pending, (state) => {
         state.isLoading = true;
       })
@@ -236,6 +239,8 @@ const currentProjectSlice = createSlice({
         state.isLoading = false;
         toast.error(payload.message);
       })
+
+
       .addCase(updateTaskState.pending, (state) => {
         state.isLoading = true;
       })
@@ -254,20 +259,23 @@ const currentProjectSlice = createSlice({
         state.isLoading = false;
         toast.error(payload);
       })
+
+
       .addCase(createTask.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(createTask.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const task = payload.tache;
+        const task = payload.data;
         state.tasks = [...state.tasks, task];
 
         toast.success("task created successfully");
       })
       .addCase(createTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.error);
       })
+
       .addCase(updateTaskTitle.pending, (state) => {
         state.isLoading = true;
       })
@@ -288,6 +296,7 @@ const currentProjectSlice = createSlice({
         state.isLoading = false;
         toast.error("there was an error, the title has not been modified");
       })
+
       .addCase(updateTaskDesc.pending, (state) => {
         state.isLoading = true;
       })
@@ -310,6 +319,7 @@ const currentProjectSlice = createSlice({
           "there was an error, the description has not been modified"
         );
       })
+
       .addCase(updateTaskDeadLine.pending, (state) => {
         state.isLoading = true;
       })
@@ -330,6 +340,7 @@ const currentProjectSlice = createSlice({
         state.isLoading = false;
         toast.error("there was an error, the deadLine was not modified");
       })
+
       .addCase(addCommentToTask.pending, (state) => {
         state.isLoading = true;
       })
@@ -352,6 +363,7 @@ const currentProjectSlice = createSlice({
           "there was an error, the comment was not saved"
         );
       })
+
       .addCase(getCurrentTask.pending, (state) => {
         state.isLoading = true;
       })
@@ -366,6 +378,7 @@ const currentProjectSlice = createSlice({
         state.isLoading = false;
         toast.error("there was an error connecting to the server");
       })
+
       .addCase(updateTaskProgress.pending, (state) => {
         //state.isLoading = true;
       })
