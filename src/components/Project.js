@@ -24,6 +24,7 @@ import { Avatar, AvatarGroup, Stack } from "@mui/material";
 import { urlBase } from "../utils/axios";
 import userIcon from "../assets/images/user.png";
 import UserAvatar from "./UserAvatar";
+import { MdDelete,MdModeEdit ,MdControlPoint  } from "react-icons/md";
 
 const Project = ({
   id,
@@ -97,7 +98,7 @@ const Project = ({
             </AvatarGroup>
           </div>
         </div>
-        <footer>
+        {/* <footer>
           <div className="actions" style={{ float: "center" }}>
             <Link
               to={{
@@ -116,8 +117,76 @@ const Project = ({
             >
               See more
             </Link>
+
+            <button
+                className="button-81"
+                role="button"
+                title="Update"
+                // onClick={toggleAddMemberForm}
+                style={{
+                  marginLeft: "40%",
+                  marginRight: "40%",
+                  padding: "3px",
+                  marginBottom: "2%",
+                }}
+              >
+                <MdOutlineAddCircleOutline style={{ fontSize: "larger" }} />
+              </button>
+
+              <button
+                className="button-81"
+                role="button"
+                title="Delete"
+                // onClick={toggleAddMemberForm}
+                style={{
+                  marginLeft: "40%",
+                  marginRight: "40%",
+                  padding: "3px",
+                  marginBottom: "2%",
+                }}
+              >
+                <MdOutlineAddCircleOutline style={{ fontSize: "larger" }} />
+              </button>
           </div>
-        </footer>
+        </footer> */}
+
+<footer className="footer-container">
+      <div className="actions">
+        <Link
+          to={{
+            pathname: "/project-details",
+            state: { currentProject: { id, name, members, start } },
+          }}
+          className="btn edit-btn"
+          onClick={() => {
+            const project = { id, name, members, start };
+            dispatch(clearCurrentProjectState());
+            dispatch(setCurrentProject(project));
+            dispatch(getProjectTasks(project.id));
+            dispatch(getProjectMembers(project.id));
+            if (isSidebarOpen) dispatch(toggleSidebar());
+          }}
+        >
+          See more
+        </Link>
+
+        <button
+          className="button-81"
+          role="button"
+          title="Update"
+        >
+          <MdDelete style={{ fontSize: "large" }} />
+        </button>
+
+        <button
+          className="button-81"
+          role="button"
+          title="Delete"
+        >
+          <MdModeEdit  style={{ fontSize: "large" }} />
+        </button>
+      </div>
+    </footer>
       </div>
     </Wrapper>
   );

@@ -324,3 +324,42 @@ ul {
 .Toastify__toast {
   text-transform: capitalize;
 }
+
+
+.footer-container {
+  background-color: #f8f9fa;
+  padding: 10px 20px;
+  border-top: 1px solid #ddd;
+  display: flex;
+  justify-content: center;
+}
+
+.actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+
+.btn.edit-btn, .button-81 {
+  background-color: #007bff;
+  color: white;
+  border: none;
+  padding: 10px 15px;
+  border-radius: 5px;
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn.edit-btn:hover, .button-81:hover {
+  background-color: #0056b3;
+}
+
+.button-81 {
+  background-color: #6c757d;
+}
+
+.button-81:hover {
+  background-color: #5a6268;
+}
