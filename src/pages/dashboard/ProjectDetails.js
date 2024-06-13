@@ -82,7 +82,7 @@ import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { MDBCard, MDBCardHeader, MDBCardText } from "mdbreact";
 
 
-export const ProjetcDetails = () => {
+export const ProjectDetails = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setDashboardText("Project Details"));
@@ -162,6 +162,7 @@ export const ProjetcDetails = () => {
   function toggleAddMemberForm() {
     setAddMemberFormIsOpen(!addMemberFormIsOpen);
   }
+  
   function addMember(e) {
     e.preventDefault();
     if (members.find((x) => x.email == emailToAdd) != null) {
@@ -283,6 +284,7 @@ export const ProjetcDetails = () => {
               </MDBCardHeader>
 
               {members.map((member) => {
+                // console.log(member, "this is inside proect detail page - 287")
                 return <TeamMember key={member.id} member={member} />;
               })}
 
@@ -384,7 +386,7 @@ export const ProjetcDetails = () => {
 
 
 
-// export const ProjetcDetails = () => {
+// export const ProjectDetails = () => {
 //   const dispatch = useDispatch();
 //   useEffect(() => {
 //     dispatch(setDashboardText("Détails du projet"));

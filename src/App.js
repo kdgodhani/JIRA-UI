@@ -9,7 +9,7 @@ import {
   Projects,
   Stats,
   SharedLayout,
-  ProjetcDetails,
+  ProjectDetails,
 } from "./pages/dashboard";
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
           <Route path="projects" element={<Projects />} />
           <Route path="profile" element={<Profile />} />
 
-          <Route path="project-details" element={<ProjetcDetails />} />
+          <Route path="project-details" element={<ProjectDetails />} />
         </Route>
         <Route path="landing" element={<Landing />} />
         <Route path="register" element={<Register />} />

@@ -22,10 +22,12 @@ export default function TeamMember({ member }) {
     <Wrapper>
       <div className="team-member">
         {/*<div className="initial">{getInitials(member.nom)}</div>*/}
+
+        {/* here add chnages on 13-06-2024  comment below line only*/}
         <UserAvatar id={member.id} name={member.name} />
 
         <div className="team-member-info">
-          <h3>{member.name}</h3>
+          {/* <h3>{member.name}</h3> */}
           <p>{member.email}</p>
         </div>
       </div>

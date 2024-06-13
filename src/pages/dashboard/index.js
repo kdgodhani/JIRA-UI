@@ -4,7 +4,7 @@ import Profile from "./Profile";
 import SharedLayout from "./SharedLayout";
 import Stats from "./Stats";
 
-import { ProjetcDetails } from "./ProjetcDetails";
+import { ProjectDetails } from "./ProjectDetails";
 //import 'bootstrap/dist/css/bootstrap.min.css';
 
-export { Profile, Tasks, Projects, Stats, SharedLayout, ProjetcDetails };
+export { Profile, Tasks, Projects, Stats, SharedLayout, ProjectDetails };

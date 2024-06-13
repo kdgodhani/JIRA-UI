@@ -54,10 +54,11 @@ export const getCurrentTask = createAsyncThunk(
   }
 );
 
+// this is for add member
 export const addMemberToProject = createAsyncThunk(
   "allProjects/getProjects/addMember",
   async (data, thunkAPI) => {
-    let url = `/projets/ajouterMembre`;
+    let url = `/projects/addMember`;
 
     try {
       const resp = await customFetch.post(url, data);
@@ -224,14 +225,15 @@ const currentProjectSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(addMemberToProject.fulfilled, (state, { payload }) => {
+        let member = payload.data[0]
         state.isLoading = false;
-        state.members = [...state.members, payload.membre];
+        state.members = [...state.members, member];
 
-        toast.success(payload.membre.nom + " is successfully added");
+        toast.success(member.name + " is successfully added");
       })
       .addCase(addMemberToProject.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.error);
+        toast.error(payload.message);
       })
       .addCase(updateTaskState.pending, (state) => {
         state.isLoading = true;
