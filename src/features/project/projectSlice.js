@@ -30,7 +30,7 @@ export const getAllProjects = createAsyncThunk(
 /*export const getTasksByProject = createAsyncThunk(
   "allProjects/getProjects/getProjectTasks",
   async (projectId, thunkAPI) => {
-    let url = `/projets/${projectId}/tasks`;
+    let url = `/projects/${projectId}/tasks`;
 
     try {
       const resp = await customFetch.get(url);
@@ -41,17 +41,17 @@ export const getAllProjects = createAsyncThunk(
   }
 );*/
 
-export const updateProjectState = createAsyncThunk(
-  "allProjects/updateProjectState",
-  async (info, thunkAPI) => {
-    try {
-      const resp = await customFetch.post("/projects/editState", info);
-      return resp.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
+// export const updateProjectState = createAsyncThunk(
+//   "allProjects/updateProjectState",
+//   async (info, thunkAPI) => {
+//     try {
+//       const resp = await customFetch.post("/projects/editState", info);
+//       return resp.data;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 
 export const createProject = createAsyncThunk(
   "allProjects/addNewProject",
@@ -62,6 +62,33 @@ export const createProject = createAsyncThunk(
       return resp.data;
     } catch (error) {
       return checkForUnauthorizedResponse(error, thunkAPI);
+    }
+  }
+);
+
+export const updateProject = createAsyncThunk(
+  "projects/updateProject",
+  async (updatedProject, thunkAPI) => {
+    try {
+      const response = await customFetch.put(
+        `/projects/${updatedProject.id}`,
+        updatedProject
+      );
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const deleteProject = createAsyncThunk(
+  "projects/deleteProject",
+  async (projectId, thunkAPI) => {
+    try {
+      const response = await customFetch.delete(`/projects/${projectId}`);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -103,24 +130,52 @@ const allProjectsSlice = createSlice({
         toast.error(payload);
       })
 
-      .addCase(updateProjectState.pending, (state) => {
+      // .addCase(updateProjectState.pending, (state) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(updateProjectState.fulfilled, (state, { payload }) => {
+      //   state.isLoading = false;
+      //   state.projects = state.projects.map((project) => {
+      //     if (project.id == payload.tache.id)
+      //       return { ...project, etat: payload.tache.etat };
+      //     return project;
+      //   });
+
+      //   console.log(payload.tache);
+      // })
+      // .addCase(updateProjectState.rejected, (state, { payload }) => {
+      //   state.isLoading = false;
+      //   toast.error(payload);
+      // })
+
+      .addCase(updateProject.pending, (state) => {
         state.isLoading = true;
       })
-      .addCase(updateProjectState.fulfilled, (state, { payload }) => {
+      .addCase(updateProject.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.projects = state.projects.map((project) => {
-          if (project.id == payload.tache.id)
-            return { ...project, etat: payload.tache.etat };
-          return project;
-        });
+        const index = state.projects.findIndex((p) => p.id === payload.project.id);
+        if (index !== -1) {
+          state.projects[index] = payload.project;
+        }
+        toast.success("Project updated successfully");
+      })
+      .addCase(updateProject.rejected, (state) => {
+        state.isLoading = false;
+      })
 
-        console.log(payload.tache);
+      .addCase(deleteProject.pending, (state) => {
+        state.isLoading = true;
       })
-      .addCase(updateProjectState.rejected, (state, { payload }) => {
+      .addCase(deleteProject.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        state.projects = state.projects.filter((p) => p.id !== payload.projectId);
+        state.totalProjects--;
+        toast.success("Project deleted successfully");
       })
-      
+      .addCase(deleteProject.rejected, (state) => {
+        state.isLoading = false;
+      })
+
       .addCase(createProject.pending, (state) => {
         state.isLoading = true;
       })
@@ -154,4 +209,5 @@ const allProjectsSlice = createSlice({
       })*/
   },
 });
+
 export default allProjectsSlice.reducer;

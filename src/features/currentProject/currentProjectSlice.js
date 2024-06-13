@@ -16,7 +16,7 @@ const initialState = {
 export const getProjectMembers = createAsyncThunk(
   "allProjects/getProjects/getProjectMembers",
   async (projectId, thunkAPI) => {
-    let url = `/projets/${projectId}/members`;
+    let url = `/projects/membersByProjectId?id=${projectId}`;
 
     try {
       const resp = await customFetch.get(url);
@@ -29,7 +29,7 @@ export const getProjectMembers = createAsyncThunk(
 export const getProjectTasks = createAsyncThunk(
   "allProjects/getProjects/getProjectTasks",
   async (projectId, thunkAPI) => {
-    let url = `/projets/${projectId}/tasks`;
+    let url = `/projects/${projectId}/tasks`;
 
     try {
       const resp = await customFetch.get(url);
@@ -199,15 +199,16 @@ const currentProjectSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getProjectMembers.fulfilled, (state, { payload }) => {
+        let memberData = payload.data
         state.isLoading = false;
-        state.members = payload.membres;
-
-        console.log(payload.membres);
+        state.members = memberData;
       })
       .addCase(getProjectMembers.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.message);
       })
+
+
       .addCase(getProjectTasks.pending, (state) => {
         state.isLoading = true;
       })

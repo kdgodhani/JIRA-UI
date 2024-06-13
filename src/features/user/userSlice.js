@@ -117,9 +117,7 @@ const userSlice = createSlice({
       .addCase(getUserParticipationProjects.fulfilled, (state, { payload }) => {
         state.isLoading = false;
 
-        console.log(payload);
-
-        state.userParticipationProjects = payload.data.projets;
+        state.userParticipationProjects = payload.data.projects;
       })
       .addCase(getUserParticipationProjects.rejected, (state, { payload }) => {
         state.isLoading = false;
@@ -176,7 +174,7 @@ export const getUserParticipationProjects = createAsyncThunk(
   async (_, thunkAPI) => {
     const userId = getUserFromLocalStorage().id;
     try {
-      const resp = await customFetch.get(`/utilisateurs/${userId}/projets`);
+      const resp = await customFetch.get(`/utilisateurs/${userId}/projects`);
 
       return resp.data;
     } catch (error) {

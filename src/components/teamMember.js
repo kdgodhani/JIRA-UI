@@ -14,9 +14,9 @@ import UserAvatar from "./UserAvatar";
 export default function TeamMember({ member }) {
   //console.log(member);
 
-  function getInitials(fullName) {
-    return fullName.substring(0, 1);
-  }
+  // function getInitials(fullName) {
+  //   return fullName.substring(0, 1);
+  // }
 
   return (
     <Wrapper>
@@ -27,8 +27,8 @@ export default function TeamMember({ member }) {
         <UserAvatar id={member.id} name={member.name} />
 
         <div className="team-member-info">
-          {/* <h3>{member.name}</h3> */}
-          <p>{member.email}</p>
+          <h3>{member.name}</h3>
+          {/* <p>{member.email}</p> */}
         </div>
       </div>
     </Wrapper>

@@ -264,7 +264,7 @@
 //                 </MDBCardText>*/}
 //                 </MDBCardBody>
 //                 <MDBCardFooter>
-//                   <smmedium className="text-muted">Projets créés</smmedium>
+//                   <smmedium className="text-muted">projects créés</smmedium>
 //                 </MDBCardFooter>
 //               </MDBCard>
 //             </MDBCol>
@@ -287,7 +287,7 @@
 //                 </MDBCardBody>
 //                 <MDBCardFooter>
 //                   <medium className="text-muted">
-//                     Participations à d'autres projets
+//                     Participations à d'autres projects
 //                   </medium>
 //                 </MDBCardFooter>
 //               </MDBCard>
@@ -361,15 +361,15 @@
 //             <MDBCard className="h-100" style={{ alignItems: "center" }}>
 //               <MDBCardBody>
 //                 <Chart1
-//                   x1={{ name: "projets créés", value: createdProjects.length }}
+//                   x1={{ name: "projects créés", value: createdProjects.length }}
 //                   x2={{
-//                     name: "participations aux projets",
+//                     name: "participations aux projects",
 //                     value: userParticipationProjects.length,
 //                   }}
 //                 />
 //               </MDBCardBody>
 //               <MDBCardFooter>
-//                 <smmedium className="text-muted">Projets </smmedium>
+//                 <smmedium className="text-muted">projects </smmedium>
 //               </MDBCardFooter>
 //             </MDBCard>
 //           </MDBCol>

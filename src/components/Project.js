@@ -29,8 +29,8 @@ const Project = ({
   id,
   name,
   members = [], // Provide default value
-  createdDateTime : start,
-  createdBy:manager,
+  createdDateTime: start,
+  createdBy: manager,
   isSidebarOpen,
 }) => {
   const dispatch = useDispatch();
@@ -39,14 +39,10 @@ const Project = ({
     getTasksByProject(id);
   }, [isSidebarOpen, dispatch, id]);
 
-  console.log(members,"membersmembers")
   const date = moment(start).format("MMM Do, YYYY");
   const uniqueMembers = members.filter(
-    (item, index) => members.findIndex((i) => i.id === item.id) === index
+    (item, index) => members.findIndex((i) => i.memberId === item.memberId) === index
   );
-
-
-  console.log(uniqueMembers,"uniqueMembers")
 
   function timePassed(dateString) {
     const date = new Date(dateString);
@@ -96,7 +92,7 @@ const Project = ({
           <div style={{ height: "25", float: "right" }}>
             <AvatarGroup max={4} sx={{ marginLeft: "10%" }}>
               {uniqueMembers.map((item) => (
-                <UserAvatar key={item.id} id={item.id} name={item.name} />
+                <UserAvatar key={item.memberId} id={item.memberId} name={item.memberName} />
               ))}
             </AvatarGroup>
           </div>
@@ -126,5 +122,6 @@ const Project = ({
     </Wrapper>
   );
 };
+
 
 export default Project;
