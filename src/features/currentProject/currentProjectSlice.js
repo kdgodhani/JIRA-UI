@@ -29,7 +29,7 @@ export const getProjectMembers = createAsyncThunk(
 export const getProjectTasks = createAsyncThunk(
   "allProjects/getProjects/getProjectTasks",
   async (projectId, thunkAPI) => {
-    let url = `/projects/${projectId}/tasks`;
+    let url = `projects/tasks/${projectId}`;
 
     try {
       const resp = await customFetch.get(url);
@@ -70,18 +70,20 @@ export const addMemberToProject = createAsyncThunk(
   }
 );
 
-
+// Project Detail page - create and upadte taskkkkk
 export const createTask = createAsyncThunk(
   "tasks/addNewTask",
   async (task, thunkAPI) => {
     const tasks = {
       title: task.title,
       deadLine: task.deadline.toISOString(),
-      memeberId: task.responsableId,
-      projetId: task.projectId,
+      memberId: task.responsibleId,
+      projectId: task.projectId,
     };
 
-    let url = `/tasks/create`;
+    console.log(tasks, "task va;ue -86 ");
+
+    let url = `projects/tasks/create`;
 
     try {
       const resp = await customFetch.post(url, tasks);
@@ -92,11 +94,13 @@ export const createTask = createAsyncThunk(
     }
   }
 );
+
+// working
 export const updateTaskState = createAsyncThunk(
   "allTasks/updateTaskState",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierEtat", info);
+      const resp = await customFetch.post("projects/tasks/editState", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -200,7 +204,7 @@ const currentProjectSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getProjectMembers.fulfilled, (state, { payload }) => {
-        let memberData = payload.data
+        let memberData = payload.data;
         state.isLoading = false;
         state.members = memberData;
       })
@@ -209,27 +213,23 @@ const currentProjectSlice = createSlice({
         toast.error(payload.message);
       })
 
-
       .addCase(getProjectTasks.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(getProjectTasks.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.tasks = payload.tasks;
-
-        console.log(payload.tasks);
+        state.tasks = payload.data;
       })
       .addCase(getProjectTasks.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.message);
       })
-
 
       .addCase(addMemberToProject.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(addMemberToProject.fulfilled, (state, { payload }) => {
-        let member = payload.data[0]
+        let member = payload.data[0];
         state.isLoading = false;
         state.members = [...state.members, member];
 
@@ -240,26 +240,35 @@ const currentProjectSlice = createSlice({
         toast.error(payload.message);
       })
 
-
       .addCase(updateTaskState.pending, (state) => {
         state.isLoading = true;
       })
+      // .addCase(updateTaskState.fulfilled, (state, { payload }) => {
+      //   state.isLoading = false;
+      //   state.tasks = state.tasks.map((task) => {
+      //     if (task.id == payload.data.id)
+      //       return { ...task, state: payload.data.state };
+      //     return task;
+      //   });
+      //   state.mapedTasks = mapData(state.tasks);
+      // })
+
       .addCase(updateTaskState.fulfilled, (state, { payload }) => {
         state.isLoading = false;
+        const updatedTask = payload.data;
         state.tasks = state.tasks.map((task) => {
-          if (task.id == payload.tache.id)
-            return { ...task, etat: payload.tache.etat };
+          if (task.id === updatedTask.id) {
+            return { ...task, status: updatedTask.status };
+          }
           return task;
         });
-        state.mapedTasks = mapData(state.tasks);
-
-        //console.log(payload.tache);
+        state.mapedTasks = mapData(state.tasks, true); // Pass true if manager view
       })
+
       .addCase(updateTaskState.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.message);
       })
-
 
       .addCase(createTask.pending, (state) => {
         state.isLoading = true;
@@ -273,7 +282,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(createTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.error);
+        toast.error(payload.message);
       })
 
       .addCase(updateTaskTitle.pending, (state) => {
@@ -359,9 +368,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(addCommentToTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(
-          "there was an error, the comment was not saved"
-        );
+        toast.error("there was an error, the comment was not saved");
       })
 
       .addCase(getCurrentTask.pending, (state) => {
@@ -402,13 +409,11 @@ const currentProjectSlice = createSlice({
   },
 });
 
-
 export const {
   handleChange,
   setCurrentProject,
   getCurrentProject,
   clearCurrentProjectState,
 } = currentProjectSlice.actions;
-
 
 export default currentProjectSlice.reducer;

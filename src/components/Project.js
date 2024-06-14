@@ -25,6 +25,7 @@ import { urlBase } from "../utils/axios";
 import userIcon from "../assets/images/user.png";
 import UserAvatar from "./UserAvatar";
 import { MdDelete,MdModeEdit ,MdControlPoint  } from "react-icons/md";
+import { getUserFromLocalStorage } from "../utils/localStorage";
 
 const Project = ({
   id,
@@ -54,17 +55,43 @@ const Project = ({
   }
 
   const [tasks, setTasks] = useState([]);
-  const getTasksByProject = async (projectId) =>
-    await fetch(`${urlBase}/projects/${projectId}/tasks`).then(
-      async (response) => {
-        if (response.ok) {
-          const data = await response.json();
-          setTasks(data.tasks);
-        } else {
-          console.log(response);
+  // const getTasksByProject = async (projectId) =>
+  //   await fetch(`${urlBase}projects/${projectId}/tasks`).then(
+  //     async (response) => {
+  //       if (response.ok) {
+  //         const data = await response.json();
+  //         setTasks(data.tasks);
+  //       } else {
+  //         console.log(response);
+  //       }
+  //     }
+  //   );
+
+  const getTasksByProject = async (projectId) => {
+    const user = getUserFromLocalStorage();
+
+    console.log(user.token,"token --- 73")
+    try {
+      const response = await fetch(`${urlBase}projects/tasks/${projectId}`, {
+        method: 'GET',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${user.token}`
         }
+      });
+      if (response.ok) {
+        const data = await response.json();
+
+        console.log(data.data, "this is data ---- 85")
+        setTasks(data.data);
+      } else {
+        console.log('Error fetching tasks:', response.message);
       }
-    );
+    } catch (error) {
+      console.log('Error fetching tasks:', error.message);
+    }
+  };
+  
 
   return (
     <Wrapper>
@@ -160,6 +187,8 @@ const Project = ({
           className="btn edit-btn"
           onClick={() => {
             const project = { id, name, members, start };
+
+            console.log(project,"project ---- 191")
             dispatch(clearCurrentProjectState());
             dispatch(setCurrentProject(project));
             dispatch(getProjectTasks(project.id));

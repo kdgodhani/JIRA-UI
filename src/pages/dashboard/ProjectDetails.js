@@ -41,24 +41,17 @@ import { setDashboardText } from "../../features/user/userSlice";
 import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { MDBCard, MDBCardHeader, MDBCardText } from "mdbreact";
 
-
 export const ProjectDetails = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setDashboardText("Project Details"));
-  }, []);
+  }, [dispatch]);
   const { project } = useSelector((store) => store.currentProject);
-
-  //dispatch(getProjectMembers(project.id));
-  //dispatch(getProjectTasks(project.payload.id));
-
   const { tasks, isLoading } = useSelector((store) => store.currentProject);
   const membersDup = useSelector((store) => store.currentProject).members;
   const members = membersDup.filter(
     (item, index) => membersDup.findIndex((i) => i.id === item.id) === index
   );
-  console.log(members ,"this is member inside project detail --- ");
-
   const [taskData, setTaskData] = useState(tasks);
   const [title, setTitle] = useState("");
   const [assignee, setAssignee] = useState("");
@@ -66,15 +59,10 @@ export const ProjectDetails = () => {
   const [addMemberFormIsOpen, setAddMemberFormIsOpen] = useState(false);
   const [emailToAdd, setEmailToAdd] = useState("");
 
-
   const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
     const info = { idTask: cardId, newState: targetLaneId };
     dispatch(updateTaskState(info));
     setTaskData(tasks);
-    //setBoardHeight(getMaxCardsPerLane() * 200);
-    //setValue(value + 1);
-
-    //setTaskData(mapData(tasks));
   };
 
   const getProgress = () => {
@@ -83,8 +71,8 @@ export const ProjectDetails = () => {
     );
   };
 
+  console.log(tasks,"this is task under project detail - 74")
 
-  //modal
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState({});
 
@@ -110,34 +98,33 @@ export const ProjectDetails = () => {
   };
 
   const addNewTask = () => {
+    console.log("Assignee in addNewTask:", assignee); // Debug log
     const selectedMember = members.find(
       (m) => m.name.toLowerCase().trim() === assignee.toLowerCase().trim()
     );
 
+    if (!selectedMember) {
+      toast.error("Selected member not found");
+      return;
+    }
+
     const newTask = {
       title,
-      responsibleId:selectedMember.memberId,
-      // responsibleId: uniqueMembers.find((m) => m.name === assignee).memberId,
+      responsibleId: selectedMember.memberId,
       deadline,
       projectId: project.payload.id,
     };
+    console.log("New Task:", newTask); // Debug log
     dispatch(createTask(newTask));
   };
-
-  console.log(assignee,"assignee 129")
-
-  let b = members.find((m) => m.name == assignee)
-    console.log(b,"assignee 130") 
-
-
 
   function toggleAddMemberForm() {
     setAddMemberFormIsOpen(!addMemberFormIsOpen);
   }
-  
+
   function addMember(e) {
     e.preventDefault();
-    if (members.find((x) => x.email == emailToAdd) != null) {
+    if (members.find((x) => x.email === emailToAdd) != null) {
       toast.error("this user is already part of your project");
       setEmailToAdd("");
       return;
@@ -145,7 +132,6 @@ export const ProjectDetails = () => {
     const data = { email: emailToAdd, id: project.payload.id };
     dispatch(addMemberToProject(data));
     setEmailToAdd("");
-    //console.log('add member with email '+ emailToAdd);
   }
 
   if (isLoading) {
@@ -156,37 +142,30 @@ export const ProjectDetails = () => {
     <Wrapper>
       <div className="main">
         <header>
-          {/*<div className='main-icon'>{project.payload.nom.charAt(0)}</div>*/}
           <Avatar
             {...stringAvatar(project.payload.name)}
             style={{ margin: "1%" }}
           />
-
           <div className="info">
             <h5>{project.payload.name}</h5>
           </div>
         </header>
 
-        {/*<div className="projet">*/}
         <MDBRow className="row-cols-1 row-cols-md-4 g-7">
           <MDBCol className="col-md-10">
-            {/*<div className="details ">*/}
             <div className="progress">
               <h5
                 style={{
                   color: "#48484C",
-
                   marginBottom: 3,
                   fontSize: "large",
                 }}
               >
-                {" "}
                 {!isNaN(getProgress()) && `Progress ${getProgress()} %`}
               </h5>
               <progress value={getProgress()} max="100" />
             </div>
             <header />
-
             <div style={{ textAlign: "right" }}>
               <button
                 className="button-81"
@@ -225,9 +204,6 @@ export const ProjectDetails = () => {
                 cardDraggable
                 style={{
                   backgroundColor: " #F6F2FF",
-                  //zIndex: '-1',
-
-                  paddingTop: "1%",
                 }}
                 laneStyle={{ backgroundColor: " #D7CBF6" }}
                 handleDragEnd={handleDragEnd}
@@ -243,23 +219,23 @@ export const ProjectDetails = () => {
                 </NewCardForm>
               </Board>
             </div>
-            {/*</div>*/}
           </MDBCol>
           <MDBCol
             className="col-md-2"
-            style={{ marginTop: "5%", borderRadius: "5%", borderColor: "gray" }}
+            style={{
+              marginTop: "5%",
+              borderRadius: "5%",
+              borderColor: "gray",
+            }}
           >
-            {/*<div className="members">*/}
             <MDBCard style={{ backgroundColor: "#f9f9ff" }}>
               <MDBCardHeader style={{ alignSelf: "center" }}>
                 Members
               </MDBCardHeader>
 
-              {members.map((member) => {
-                // member.name = member.memberMail
-                // console.log(member, "this is inside proect detail page - 287")
-                return <TeamMember key={member.id} member={member} />;
-              })}
+              {members.map((member) => (
+                <TeamMember key={member.id} member={member} />
+              ))}
 
               <button
                 className="button-81"
@@ -317,13 +293,11 @@ export const ProjectDetails = () => {
                   </div>
                 </Form>
               )}
-              {/*</div>*/}
-
               <div style={{ clear: "both" }} />
-              {/*</div>*/}
             </MDBCard>
           </MDBCol>
         </MDBRow>
+
         {modalIsOpen && (
           <TaskModal
             currentTaskId={currentTaskId}
@@ -349,3 +323,5 @@ export const ProjectDetails = () => {
     </Wrapper>
   );
 };
+
+export default ProjectDetails;

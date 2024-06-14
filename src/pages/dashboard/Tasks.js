@@ -30,7 +30,6 @@ export const Tasks = () => {
   );
   const { project } = useSelector((store) => store.currentProject);
 
-  //const taskData = mapData(tasks);
   const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
     const info = { idTask: cardId, newState: targetLaneId };
     dispatch(updateTaskState(info));
