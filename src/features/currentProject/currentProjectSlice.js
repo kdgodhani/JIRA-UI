@@ -43,7 +43,7 @@ export const getProjectTasks = createAsyncThunk(
 export const getCurrentTask = createAsyncThunk(
   "allTasks/getCurrentTask",
   async (taskId, thunkAPI) => {
-    let url = `/tasks/tacheCourante/${taskId}`;
+    let url = `projects/tasks/getTaskById/${taskId}`;
 
     try {
       const resp = await customFetch.get(url);
@@ -95,7 +95,6 @@ export const createTask = createAsyncThunk(
   }
 );
 
-// working
 export const updateTaskState = createAsyncThunk(
   "allTasks/updateTaskState",
   async (info, thunkAPI) => {
@@ -355,7 +354,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(addCommentToTask.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const editedTask = payload.tache;
+        const editedTask = payload.data;
 
         state.tasks = state.tasks.map((task) => {
           if (task.id === editedTask.id) {
@@ -377,13 +376,13 @@ const currentProjectSlice = createSlice({
       .addCase(getCurrentTask.fulfilled, (state, { payload }) => {
         state.isLoading = false;
 
-        state.currentTask = payload.tache;
+        state.currentTask = payload.data;
 
         //toast.success('Commentaire enregistré!');
       })
       .addCase(getCurrentTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error connecting to the server");
+        toast.error(payload.message);
       })
 
       .addCase(updateTaskProgress.pending, (state) => {
