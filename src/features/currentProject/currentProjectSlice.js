@@ -106,6 +106,8 @@ export const updateTaskState = createAsyncThunk(
     }
   }
 );
+
+
 export const updateTaskTitle = createAsyncThunk(
   "allTasks/updateTaskTitle",
   async (info, thunkAPI) => {
@@ -139,23 +141,22 @@ export const updateTaskProgress = createAsyncThunk(
     }
   }
 );
-export const addCommentToTask = createAsyncThunk(
-  "allTasks/addComment",
+export const updateTaskDeadLine = createAsyncThunk(
+  "allTasks/updateTaskDeadLine",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/commenterTache", info);
+      const resp = await customFetch.post("/tasks/modifierDeadLine", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
-
-export const updateTaskDeadLine = createAsyncThunk(
-  "allTasks/updateTaskDeadLine",
+export const addCommentToTask = createAsyncThunk(
+  "allTasks/addComment",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierDeadLine", info);
+      const resp = await customFetch.post("/tasks/commenterTache", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);

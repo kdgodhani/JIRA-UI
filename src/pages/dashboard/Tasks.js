@@ -80,7 +80,8 @@ export const Tasks = () => {
             <TaskModal
               currentTaskId={currentTaskId}
               toggleModal={toggleModal}
-              chef={false}
+              // chef={false}
+              // chef={true}
             />
           )}
         </div>

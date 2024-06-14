@@ -71,7 +71,6 @@ export const ProjectDetails = () => {
     );
   };
 
-  console.log(tasks,"this is task under project detail - 74")
 
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState({});
@@ -98,7 +97,6 @@ export const ProjectDetails = () => {
   };
 
   const addNewTask = () => {
-    console.log("Assignee in addNewTask:", assignee); // Debug log
     const selectedMember = members.find(
       (m) => m.name.toLowerCase().trim() === assignee.toLowerCase().trim()
     );
@@ -114,7 +112,6 @@ export const ProjectDetails = () => {
       deadline,
       projectId: project.payload.id,
     };
-    console.log("New Task:", newTask); // Debug log
     dispatch(createTask(newTask));
   };
 
@@ -213,7 +210,7 @@ export const ProjectDetails = () => {
                   descriptionPlaceholder="assigned to"
                   labelPlaceholder="deadline"
                   titlePlaceholder="title"
-                  onSubmit={(card) => console.log(card)}
+                  onSubmit={(card) => console.log(card,"--- Project Detail 213")}
                 >
                   <CardSubmitButton />
                 </NewCardForm>
