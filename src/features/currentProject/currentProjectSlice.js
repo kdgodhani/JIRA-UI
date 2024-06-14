@@ -112,10 +112,10 @@ export const updateTaskTitle = createAsyncThunk(
   "allTasks/updateTaskTitle",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierTitre", info);
+      const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -123,10 +123,10 @@ export const updateTaskDesc = createAsyncThunk(
   "allTasks/updateTaskDesc",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierDescription", info);
+      const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -134,10 +134,10 @@ export const updateTaskProgress = createAsyncThunk(
   "allTasks/updateTaskProgress",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierAvancement", info);
+      const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -145,10 +145,10 @@ export const updateTaskDeadLine = createAsyncThunk(
   "allTasks/updateTaskDeadLine",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/modifierDeadLine", info);
+      const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -156,10 +156,10 @@ export const addCommentToTask = createAsyncThunk(
   "allTasks/addComment",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("/tasks/commenterTache", info);
+      const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
+      return thunkAPI.rejectWithValue(error.message);
     }
   }
 );
@@ -290,7 +290,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskTitle.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const editedTask = payload.tache;
+        const editedTask = payload.data;
 
         state.tasks = state.tasks.map((task) => {
           if (task.id === editedTask.id) {
@@ -311,7 +311,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskDesc.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const editedTask = payload.tache;
+        const editedTask = payload.data;
 
         state.tasks = state.tasks.map((task) => {
           if (task.id === editedTask.id) {
@@ -334,7 +334,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskDeadLine.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const editedTask = payload.tache;
+        const editedTask = payload.data;
 
         state.tasks = state.tasks.map((task) => {
           if (task.id === editedTask.id) {
@@ -348,6 +348,23 @@ const currentProjectSlice = createSlice({
       .addCase(updateTaskDeadLine.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error("there was an error, the deadLine was not modified");
+      })
+
+      .addCase(updateTaskProgress.pending, (state) => {
+        //state.isLoading = true;
+      })
+      .addCase(updateTaskProgress.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        const editedTask = payload.data;
+
+        state.currentTask = editedTask;
+        //console.log("currentTask : " + state.currentTask);
+
+        toast.success("progress modified!");
+      })
+      .addCase(updateTaskProgress.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error("there was an error connecting to the server");
       })
 
       .addCase(addCommentToTask.pending, (state) => {
@@ -386,22 +403,7 @@ const currentProjectSlice = createSlice({
         toast.error(payload.message);
       })
 
-      .addCase(updateTaskProgress.pending, (state) => {
-        //state.isLoading = true;
-      })
-      .addCase(updateTaskProgress.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
-        const editedTask = payload.tache;
 
-        state.currentTask = editedTask;
-        //console.log("currentTask : " + state.currentTask);
-
-        toast.success("progress modified!");
-      })
-      .addCase(updateTaskProgress.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        toast.error("there was an error connecting to the server");
-      });
     /* .addCase(getCurrentProject, (state, payload) => {
         state.isLoading = false;
         state.project = payload;

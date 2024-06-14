@@ -3,16 +3,6 @@ import { X } from "react-feather";
 
 import Wrapper from "../assets/wrappers/CustomInput";
 
-/*interface CustomInputProps {
-    text;
-    onSubmit: (value) => void;
-    displayClass;
-    editClass;
-    placeholder;
-    defaultValue;
-    buttonText;
-}*/
-
 const CustomInput = (props) => {
     const {
         text,
@@ -21,23 +11,28 @@ const CustomInput = (props) => {
         editClass,
         placeholder,
         defaultValue,
-        buttonText,chef,
+        buttonText,
+        master,
     } = props;
+
+    console.log(props,"inside custom input -- 28")
     const [isCustomInput, setIsCustomInput] = useState(false);
     const [inputText, setInputText] = useState(defaultValue || "");
 
     const submission = (e) => {
         e.preventDefault();
         if (inputText && onSubmit) {
-            setInputText("");
             onSubmit(inputText);
+            setInputText("");
         }
         setIsCustomInput(false);
     };
 
     function handleClick() {
-        if (chef) setIsCustomInput(true);
+        if (master) setIsCustomInput(true);
     }
+
+    console.log(isCustomInput,"isCustomInput --- 45")
 
     return (
         <Wrapper>
@@ -62,7 +57,7 @@ const CustomInput = (props) => {
             ) : (
                 <p
                     className={`custom-input-display ${displayClass ? displayClass : ""}`}
-                    onClick={handleClick }
+                    onClick={handleClick}
                 >
                     {text}
                 </p>

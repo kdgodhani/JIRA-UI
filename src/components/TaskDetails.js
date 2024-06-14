@@ -31,70 +31,79 @@ import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { setDashboardText } from "../features/user/userSlice";
 
-
-
-
-function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
+function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   const dispatch = useDispatch();
-  /*useEffect(() => {
-    console.log(" TaskDetail : currentTaskId : " + taskId);
-    dispatch(getCurrentTask(taskId));
-    toast.info("getcurrentTask called");
-  }, []);*/
-
   const { currentTask } = useSelector((store) => store.currentProject);
-  const task = currentTask;
-  const comments = task.comments;
+  const [isEditingTitle, setIsEditingTitle] = useState(false);
+  const [isEditingDesc, setIsEditingDesc] = useState(false);
+  const [newTitle, setNewTitle] = useState("");
+  const [newDesc, setNewDesc] = useState("");
+  const [editProgressFormIsOpen, setEditProgressFormIsOpen] = useState(false);
+  const [newProgress, setNewProgress] = useState(0);
 
-  const updateTitle = async (newTitle) => {
+ 
+  // useEffect(() => {
+  //   dispatch(getCurrentTask(taskId));
+  // }, [taskId]);
+
+  let task = currentTask[0]
+
+  
+  console.log(task,"task -- 48")
+
+  useEffect(() => {
+    if (task) {
+      setNewTitle(task.title);
+      setNewDesc(task.description);
+      setNewProgress(task.progress);
+    }
+  }, [task]);
+
+  const handleTitleSubmit = async (e) => {
+    e.preventDefault();
     const info = { taskId: task.id, newTitle: newTitle };
-    //setTaskValues({...taskValues, titre:newTitle});
-
-    dispatch(updateTaskTitle(info)).then(dispatch(getCurrentTask(taskId)));
+    await dispatch(updateTaskTitle(info)).then(dispatch(getCurrentTask(taskId)));
+    setIsEditingTitle(false);
   };
-  const updateDesc = async (newDesc) => {
+
+  const handleDescSubmit = async (e) => {
+    e.preventDefault();
     const info = { taskId: task.id, newDesc: newDesc };
-    //setTaskValues({...taskValues, description:newDesc});
-
-    return await dispatch(updateTaskDesc(info)).then(
-      dispatch(getCurrentTask(taskId))
-    );
+    await dispatch(updateTaskDesc(info)).then(dispatch(getCurrentTask(taskId)));
+    setIsEditingDesc(false);
   };
+
   const updateDeadLine = async (newDeadLine) => {
     if (manager) {
       const info = { taskId: task.id, newDeadLine: newDeadLine };
-      dispatch(updateTaskDeadLine(info)).then(dispatch(getCurrentTask(taskId)));
-    } else toast.error("only the project manager can modify the deadline");
+      await dispatch(updateTaskDeadLine(info)).then(dispatch(getCurrentTask(taskId)));
+    } else {
+      toast.error("only the project manager can modify the deadline");
+    }
   };
+
+  const updateProgress = async (value) => {
+    value.preventDefault();
+    const info = { taskId: task.id, newProgress: newProgress };
+    await dispatch(updateTaskProgress(info)).then(dispatch(getCurrentTask(taskId)));
+  };
+
+  console.log(task,"this is task after some value update 85")
+
   const addComment = async (data) => {
     const info = {
       text: data.text,
       authorId: getUserFromLocalStorage().id,
       taskId: task.id,
     };
-    return await dispatch(addCommentToTask(info))
-      .then(dispatch(getCurrentTask(taskId)))
-      .then(dispatch(getAllTasks()));
+    await dispatch(addCommentToTask(info)).then(dispatch(getCurrentTask(taskId)));
+    dispatch(getAllTasks());
   };
 
-  const updateProgress = async (value) => {
-    value.preventDefault();
-    const info = { taskId: task.id, newProgress: newProgress };
-    //setTaskValues({...taskValues, description:newDesc});
-
-    return await dispatch(updateTaskProgress(info)).then(
-      dispatch(getCurrentTask(taskId))
-    );
-  };
 
   function toggleEditProgressForm() {
     setEditProgressFormIsOpen(!editProgressFormIsOpen);
   }
-
-  const [editProgressFormIsOpen, setEditProgressFormIsOpen] = useState(false);
-  const [newProgress, setNewProgress] = useState(task.progress);
-  let displayType = "none";
-  if (!manager) displayType = "block";
 
   return (
     <Wrapper>
@@ -104,13 +113,41 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
             <Type />
             <p>Title</p>
           </div>
-          <CustomInput
-            defaultValue={task.title}
-            text={task.title}
-            placeholder="Enter Title"
-            onSubmit={updateTitle}
-            manager={manager}
-          />
+          {isEditingTitle ? (
+            <form
+              onSubmit={handleTitleSubmit}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <input
+                type="text"
+                value={newTitle}
+                onChange={(e) => setNewTitle(e.target.value)}
+                placeholder="Enter Title"
+                autoFocus
+                style={{ marginRight: "10px", padding: "5px", flex: "1" }}
+              />
+              <button
+                type="submit"
+                style={{ marginRight: "5px", padding: "5px" }}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditingTitle(false)}
+                style={{ padding: "5px" }}
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <p
+              onClick={() => manager && setIsEditingTitle(true)}
+              style={{ cursor: "pointer" }}
+            >
+              {task?.title || "No title available"}
+            </p>
+          )}
         </div>
 
         <div className="cardinfo-box">
@@ -118,13 +155,40 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
             <List />
             <p>Description</p>
           </div>
-          <CustomInput
-            defaultValue={task.description}
-            text={task.description || "Add a Description"}
-            placeholder="Enter Description"
-            onSubmit={updateDesc}
-            manager={manager}
-          />
+          {isEditingDesc ? (
+            <form
+              onSubmit={handleDescSubmit}
+              style={{ display: "flex", alignItems: "center" }}
+            >
+              <textarea
+                value={newDesc}
+                onChange={(e) => setNewDesc(e.target.value)}
+                placeholder="Enter Description"
+                autoFocus
+                style={{ marginRight: "10px", padding: "5px", flex: "1" }}
+              />
+              <button
+                type="submit"
+                style={{ marginRight: "5px", padding: "5px" }}
+              >
+                Save
+              </button>
+              <button
+                type="button"
+                onClick={() => setIsEditingDesc(false)}
+                style={{ padding: "5px" }}
+              >
+                Cancel
+              </button>
+            </form>
+          ) : (
+            <p
+              onClick={() => manager && setIsEditingDesc(true)}
+              style={{ cursor: "pointer" }}
+            >
+              {task?.description || "No description available"}
+            </p>
+          )}
         </div>
 
         <div className="cardinfo-box">
@@ -134,7 +198,9 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
           </div>
           <input
             type="date"
-            value={task.deadline}
+            value={
+              task?.deadline || new Date().toISOString().substr(0, 10)
+            }
             min={new Date().toISOString().substr(0, 10)}
             onChange={(event) => updateDeadLine(event.target.value)}
             readOnly={!manager}
@@ -146,22 +212,19 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
           <div className="cardinfo-box-title">
             <CheckSquare />
             <p>Progress</p>
-            <button
-              className={manager ? "notDisplay" : "hhh"}
-              style={{
-                backgroundColor: "initial",
-
-                marginLeft: "80%",
-                marginTop: "5px",
-                border: "none",
-                float: "right",
-              }}
-              onClick={toggleEditProgressForm}
-            >
-              <MdOutlineEdit
-                style={{ color: "black", fontSize: "25px", cursor: "pointer" }}
-              />
-            </button>
+            {manager && (
+              <button
+                style={{
+                  backgroundColor: "initial",
+                  marginLeft: "auto",
+                  border: "none",
+                  cursor: "pointer",
+                }}
+                onClick={toggleEditProgressForm}
+              >
+                <MdOutlineEdit style={{ color: "black", fontSize: "25px" }} />
+              </button>
+            )}
           </div>
           <div
             className="cardinfo-box-progress-bar"
@@ -192,7 +255,6 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
                   min={0}
                   max={100}
                   onChange={(event) => setNewProgress(event.target.value)}
-                  readOnly={manager}
                   autoFocus
                   style={{
                     width: "60px",
@@ -217,21 +279,18 @@ function TaskDetails({ taskId, manager, toggleModal, handleCardClick }) {
               </div>
             </Form>
           )}
+        </div>
 
-          <header />
-
-          <div className="cardinfo-box">
-            <div className="cardinfo-box-title">
-              <BiCommentDetail />
-              <p>Comments</p>
-            </div>
-            <Comment comments={comments} addComment={addComment} />
+        <div className="cardinfo-box">
+          <div className="cardinfo-box-title">
+            <BiCommentDetail />
+            <p>Comments</p>
           </div>
+          <Comment comments={task?.comments} addComment={addComment} />
         </div>
       </div>
     </Wrapper>
   );
 }
-
 
 export default TaskDetails;
