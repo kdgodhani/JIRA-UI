@@ -1,18 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { Comments } from "./Comments"; // a custom component for displaying comments
 import Wrapper from "../assets/wrappers/TaskDetails";
 import { MdDone } from "react-icons/md";
-import { BiTimeFive } from "react-icons/bi";
-import { BsPerson } from "react-icons/bs";
 import { BiCommentDetail } from "react-icons/bi";
 import { MdOutlineEdit } from "react-icons/md";
-import { TfiTimer } from "react-icons/tfi";
-import { GiStairsGoal } from "react-icons/gi";
-import { AiOutlineSave } from "react-icons/ai";
-import ProjectInfo from "./ProjectInfo";
-import { BiTask } from "react-icons/bi";
 import { Calendar, CheckSquare, List, Tag, Trash, Type } from "react-feather";
-import CustomInput from "./CustomInput";
+
 import {
   updateTaskDeadLine,
   updateTaskDesc,
@@ -27,8 +19,7 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 import { toast } from "react-toastify";
 import { getAllTasks } from "../features/tasks/allTasksSlice";
 import Form from "react-bootstrap/Form";
-import Button from "react-bootstrap/Button";
-import { setDashboardText } from "../features/user/userSlice";
+
 
 function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   const dispatch = useDispatch();

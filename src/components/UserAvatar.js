@@ -1,7 +1,4 @@
-import { useSelector } from "react-redux";
-import Wrapper from "../assets/wrappers/BigSidebar";
-import Logo from "./logo";
-import NavLinks from "./NavLinks";
+
 import { Avatar } from "@mui/material";
 import { stringAvatar } from "../utils/utilsFunctions";
 import React, { useEffect, useState } from "react";

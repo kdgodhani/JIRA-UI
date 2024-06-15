@@ -1,6 +1,5 @@
 import React from "react";
 import Wrapper from "../assets/wrappers/TaskModal";
-import { AiFillCloseCircle } from "react-icons/ai";
 import TaskDetails from "./TaskDetails";
 import { RiArrowGoBackLine } from "react-icons/ri";
 

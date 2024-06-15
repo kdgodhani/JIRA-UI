@@ -34,7 +34,6 @@ import { FcParallelTasks } from "react-icons/fc";
 import { MDBCardFooter, MDBCardTitle } from "mdbreact";
 import { getAllTasks } from "../../features/tasks/allTasksSlice";
 import { getAllProjects } from "../../features/project/projectSlice";
-import Chart1 from "../../components/Chart1";
 
 const Profile = () => {
   const { isLoading, user, userImage, userParticipationProjects } = useSelector(
@@ -196,11 +195,11 @@ const Profile = () => {
             }}
           >
             <MDBTypography tag="h5" style={{ marginBottom: "0" }}>
-              {user.name}
+              {user.email}
             </MDBTypography>
           </div>
         </div>
-        <div className="p-4 text-black" style={{ backgroundColor: "#f8f9fa" }}>
+        {/* <div className="p-4 text-black" style={{ backgroundColor: "#f8f9fa" }}>
           <div className="d-flex justify-content-end text-center py-1">
             <div>
               <MDBCardText className="small text-muted mb-0">
@@ -208,13 +207,13 @@ const Profile = () => {
               </MDBCardText>
             </div>
           </div>
-        </div>
+        </div> */}
         <MDBCardBody className="text-black p-4">
           <div className="mb-5">
             <p className="lead fw-normal mb-1">About</p>
             <div className="p-4" style={{ backgroundColor: "#f8f9fa" }}>
               <MDBCardText className="font-italic mb-1">
-                Web Developer
+                Software Developer
               </MDBCardText>
             </div>
           </div>
@@ -238,7 +237,7 @@ const Profile = () => {
                 </MDBCardFooter>
               </MDBCard>
             </MDBCol>
-            <MDBCol>
+            {/* <MDBCol>
               <MDBCard className="h-100" style={{ alignItems: "center" }}>
                 <MDBCardBody>
                   <MDBCardTitle
@@ -255,7 +254,7 @@ const Profile = () => {
                   </small>
                 </MDBCardFooter>
               </MDBCard>
-            </MDBCol>
+            </MDBCol> */}
             <MDBCol>
               <MDBCard className="h-100" style={{ alignItems: "center" }}>
                 <MDBCardBody>
@@ -272,7 +271,7 @@ const Profile = () => {
                 </MDBCardFooter>
               </MDBCard>
             </MDBCol>
-            <MDBCol>
+            {/* <MDBCol>
               <MDBCard className="h-100" style={{ alignItems: "center" }}>
                 <MDBCardBody>
                   <MDBCardTitle
@@ -287,39 +286,10 @@ const Profile = () => {
                   <small className="text-muted">Validated Tasks</small>
                 </MDBCardFooter>
               </MDBCard>
-            </MDBCol>
+            </MDBCol> */}
           </MDBRow>
         </MDBCardBody>
         <MDBRow className="row-cols-1 row-cols-md-2 g-7">
-          <MDBCol>
-            <MDBCard className="h-100" style={{ alignItems: "center" }}>
-              <MDBCardBody>
-                <Chart1
-                  x1={{ name: "created projects", value: createdProjects.length }}
-                  x2={{
-                    name: "participation in projects",
-                    value: userParticipationProjects.length,
-                  }}
-                />
-              </MDBCardBody>
-              <MDBCardFooter>
-                <small className="text-muted">Projects</small>
-              </MDBCardFooter>
-            </MDBCard>
-          </MDBCol>
-          <MDBCol>
-            <MDBCard className="h-100" style={{ alignItems: "center" }}>
-              <MDBCardBody>
-                <Chart1
-                  x1={{ name: "received tasks", value: receivedTasks.length }}
-                  x2={{ name: "validated tasks", value: validatedTasks.length }}
-                />
-              </MDBCardBody>
-              <MDBCardFooter>
-                <small className="text-muted">Tasks</small>
-              </MDBCardFooter>
-            </MDBCard>
-          </MDBCol>
         </MDBRow>
       </MDBCard>
     </>

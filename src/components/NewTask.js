@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import Modal from "react-modal";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import Wrapper from "../assets/wrappers/TaskModal";
 import ProjectInfo from "./ProjectInfo";
 import { BiTask } from "react-icons/bi";
-import { AiFillCloseCircle } from "react-icons/ai";
 import { FaAlignLeft, FaCalendarAlt } from "react-icons/fa";
 import { FaCaretDown } from "react-icons/fa";
 import { toast } from "react-toastify";

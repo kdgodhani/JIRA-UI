@@ -2,9 +2,6 @@ import React, { useState } from "react";
 import { CommentSection } from "react-comments-section";
 import Wrapper from "../assets/wrappers/Comment";
 import { getUserFromLocalStorage } from "../utils/localStorage";
-import { Error } from "../pages";
-import { useSelector } from "react-redux";
-//import 'react-comments-section/dist/index.css'
 
 const Comment = ({ addComment, comments }) => {
   //const { currentTask } = useSelector((store) => store.currentProject);

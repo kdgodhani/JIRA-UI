@@ -13,16 +13,10 @@ import {
 } from "../features/currentProject/currentProjectSlice";
 import { toggleSidebar } from "../features/user/userSlice";
 
-import {
-  deleteProject,
-  getTasksByProject,
-  setEditProject,
-} from "../features/project/projectSlice";
 import React, { useEffect, useState } from "react";
 import { stringAvatar } from "../utils/utilsFunctions";
 import { Avatar, AvatarGroup, Stack } from "@mui/material";
 import { urlBase } from "../utils/axios";
-import userIcon from "../assets/images/user.png";
 import UserAvatar from "./UserAvatar";
 import { MdDelete,MdModeEdit ,MdControlPoint  } from "react-icons/md";
 import { getUserFromLocalStorage } from "../utils/localStorage";

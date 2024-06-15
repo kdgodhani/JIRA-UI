@@ -10,7 +10,6 @@ import { useState } from "react";
 import { updateTaskState } from "../../features/tasks/allTasksSlice";
 import { TaskModal } from "../../components/TaskModal";
 import { Divider } from "@mui/material";
-import { RiArrowGoBackLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { getCurrentTask } from "../../features/currentProject/currentProjectSlice";
 import { setDashboardText } from "../../features/user/userSlice";
@@ -18,32 +17,47 @@ import { setDashboardText } from "../../features/user/userSlice";
 export const Tasks = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState(-1);
+  const [localTasks, setLocalTasks] = useState([]);
   const dispatch = useDispatch();
-  useEffect(() => {
-    dispatch(getAllTasks());
-    dispatch(setDashboardText("Received Tasks"));
-  }, []);
   const navigate = useNavigate();
 
-  const { isLoading, tasks, mapedTasks, totalTasks } = useSelector(
+  const { isLoading, tasks, totalTasks } = useSelector(
     (store) => store.allTasks
   );
-  const { project } = useSelector((store) => store.currentProject);
 
-  const handleDragEnd = (cardId, sourceLaneId, targetLaneId) => {
+  useEffect(() => {
+    dispatch(getAllTasks()).then((action) => {
+      if (action.payload) {
+        setLocalTasks(action.payload);
+      }
+    });
+    dispatch(setDashboardText("Received Tasks"));
+  }, [dispatch]);
+
+  const handleDragEnd = async (cardId, sourceLaneId, targetLaneId) => {
     const info = { idTask: cardId, newState: targetLaneId };
-    dispatch(updateTaskState(info));
+    setLocalTasks((prevTasks) =>
+      prevTasks.map((task) =>
+        task._id === cardId ? { ...task, state: targetLaneId } : task
+      )
+    );
+    await dispatch(updateTaskState(info));
+    dispatch(getAllTasks()).then((action) => {
+      if (action.payload) {
+        setLocalTasks(action.payload);
+      }
+    });
   };
 
   const toggleModal = () => {
     setModalIsOpen(!modalIsOpen);
   };
 
-  function handleCardClick(taskId) {
+  const handleCardClick = (taskId) => {
     if (!modalIsOpen) toggleModal();
     dispatch(getCurrentTask(taskId));
     setCurrentTaskId(taskId);
-  }
+  };
 
   if (isLoading) {
     return <Loading />;
@@ -54,8 +68,7 @@ export const Tasks = () => {
       <div className="main">
         <div style={{ paddingLeft: "5%" }}>
           <p style={{ marginBottom: "2px", color: "#576574" }}>
-            {totalTasks}  task{tasks.length > 1 && "s"} found
-            {tasks.length > 1 && "s"}
+            {totalTasks} task{tasks.length > 1 && "s"} found
           </p>
           <Divider sx={{ marginBottom: "2%", marginTop: "2px" }} />
           <p
@@ -69,7 +82,7 @@ export const Tasks = () => {
             click on the task to see more
           </p>
           <Board
-            data={mapData(tasks, false)}
+            data={mapData(localTasks, false)}
             editable
             cardDraggable
             style={{ backgroundColor: " #F6F2FF" }}
@@ -80,8 +93,6 @@ export const Tasks = () => {
             <TaskModal
               currentTaskId={currentTaskId}
               toggleModal={toggleModal}
-              // chef={false}
-              // chef={true}
             />
           )}
         </div>
@@ -89,6 +100,7 @@ export const Tasks = () => {
     </Wrapper>
   );
 };
+
 const Wrapper = styled.main`
   .react-trello-lane {
     border: 50;
@@ -96,7 +108,6 @@ const Wrapper = styled.main`
   }
   .main {
     background-color: #f9f6ff;
-
     border-radius: 1%;
     padding: 1%;
   }

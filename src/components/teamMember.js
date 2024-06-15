@@ -1,14 +1,7 @@
 import React from "react";
 import Loading from "./Loading";
-import {
-  MDBCard,
-  MDBCardBody,
-  MDBCardTitle,
-  MDBCardText,
-  MDBIcon,
-} from "mdbreact";
+
 import Wrapper from "../assets/wrappers/TeamMember";
-import { BsPerson } from "react-icons/bs";
 import UserAvatar from "./UserAvatar";
 
 export default function TeamMember({ member }) {
