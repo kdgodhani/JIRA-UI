@@ -156,7 +156,7 @@ export const addCommentToTask = createAsyncThunk(
   "allTasks/addComment",
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post("projects/tasks/modify", info);
+      const resp = await customFetch.post("projects/tasks/addComment", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);

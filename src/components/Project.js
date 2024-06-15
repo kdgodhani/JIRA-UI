@@ -69,8 +69,6 @@ const Project = ({
 
   const getTasksByProject = async (projectId) => {
     const user = getUserFromLocalStorage();
-
-    console.log(user.token,"token --- 73")
     try {
       const response = await fetch(`${urlBase}projects/tasks/${projectId}`, {
         method: 'GET',
@@ -82,7 +80,7 @@ const Project = ({
       if (response.ok) {
         const data = await response.json();
 
-        console.log(data.data, "this is data ---- 85")
+        // console.log(data.data, "this is data ---- 85")
         setTasks(data.data);
       } else {
         console.log('Error fetching tasks:', response.message);

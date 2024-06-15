@@ -13,15 +13,22 @@ const Comment = ({ addComment, comments }) => {
   let data = [];
   if (Array.isArray(comments))
     data = comments.map((item) => {
+//   {
+//     "commentId": 2,
+//     "content": "user 9 ",
+//     "author": 9,
+//     "taskId": 7,
+//     "authorName": "user10@planetx.com"
+// },
       return {
-        userId: item.auteur.id,
-        comId: item.id,
-        fullName: item.auteur.nom,
-        //userProfile: 'https://www.linkedin.com/in/riya-negi-8879631a9/',
-        text: item.date.substring(0, 10) + " : " + item.contenu,
+        userId: item.author,
+        comId: item.commentId,
+        fullName: item.authorName,
+        // text: item.date.substring(0, 10) + " : " + item.contenu,
+        text: item.content,
         avatarUrl:
           "https://ui-avatars.com/api/name=" +
-          item.auteur.nom +
+          item.authorName +
           "&background=random",
         replies: [],
       };
@@ -29,7 +36,7 @@ const Comment = ({ addComment, comments }) => {
 
   const customNoComment = () => (
     <div className="no-com" style={{ marginLeft: "10%", marginTop: "5%" }}>
-      zero commentaires, soyez le premier à commenter cette tache!
+      zero comments, be the first to comment on this spot!
     </div>
   );
 
@@ -40,7 +47,7 @@ const Comment = ({ addComment, comments }) => {
           currentUserId: getUserFromLocalStorage().id,
           currentUserImg:
             "https://ui-avatars.com/api/name=" +
-            getUserFromLocalStorage().nom +
+            getUserFromLocalStorage().name +
             "&background=random",
 
           currentUserFullName: getUserFromLocalStorage().nom,

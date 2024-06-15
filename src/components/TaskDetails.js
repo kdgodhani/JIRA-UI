@@ -49,8 +49,6 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   let task = currentTask[0]
 
   
-  console.log(task,"task -- 48")
-
   useEffect(() => {
     if (task) {
       setNewTitle(task.title);
@@ -88,7 +86,6 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
     await dispatch(updateTaskProgress(info)).then(dispatch(getCurrentTask(taskId)));
   };
 
-  console.log(task,"this is task after some value update 85")
 
   const addComment = async (data) => {
     const info = {

@@ -5,9 +5,9 @@ import TaskDetails from "./TaskDetails";
 import { RiArrowGoBackLine } from "react-icons/ri";
 
 export const TaskModal = ({ currentTaskId, toggleModal, chef = true }) => {
-  console.log(currentTaskId,"currentTaskId - 8")
-  console.log(toggleModal,"toggleModal - 9")
-  console.log(chef,"chef - 10")
+  // console.log(currentTaskId,"currentTaskId - 8")
+  // console.log(toggleModal,"toggleModal - 9")
+  // console.log(chef,"chef - 10")
   return (
     <Wrapper>
       <div>

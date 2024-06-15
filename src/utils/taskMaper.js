@@ -1,7 +1,6 @@
 
 export const mapData = (tasks, manager) => {
 
-  console.log(tasks,"this is tasjjjj -4 ")
   const cards = tasks.map(
     ({
       id,
@@ -13,6 +12,7 @@ export const mapData = (tasks, manager) => {
       title,
       progress,
       comments,
+      projectName
     }) => {
       const responsibleName = responsible ? responsible: "Unknown";
 
@@ -22,7 +22,7 @@ export const mapData = (tasks, manager) => {
         title: title,
         description: manager
           ? `assigned to: ${responsibleName}`
-          : `project: ${project.name}`,
+          : `project: ${projectName}`,
         label: `${deadline.substring(0, 10)}`,
         draggable: true,
         startDate,
@@ -34,7 +34,6 @@ export const mapData = (tasks, manager) => {
     }
   );
 
-  console.log(cards , "this is inside taskMaper    --- 35")
 
   const pending = cards.filter((card) => card.status === "PENDING");
   const inProgress = cards.filter((card) => card.status === "IN_PROGRESS");

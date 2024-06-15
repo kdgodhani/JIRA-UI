@@ -14,9 +14,6 @@ export const getAllProjects = createAsyncThunk(
   "allProjects/getProjects",
   async (_, thunkAPI) => {
     const user = getUserFromLocalStorage();
-
-    console.log(user,"user ---- from local storage --- ")
-
     let url = `/projects/getAllByUserId`; // here we get id from JWT Token
 
     try {
@@ -180,24 +177,20 @@ const allProjectsSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(createProject.fulfilled, (state, { payload }) => {
-
-        console.log(payload , "this is payload     --- inside")
         state.isLoading = false;
         state.projects = [...state.projects, payload.projet];
-
-        console.log(state.projects , "this is state projectr    --- insode ")
         toast.success("project created successfully!");
       })
       .addCase(createProject.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.message);
       });
     /*.addCase(getTasksByProject.pending, (state) => {})
       .addCase(getTasksByProject.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         const currentProjectId = payload.idProjet;
         state.projects = state.projects.map((p) => {
-          if (p.id == currentProjectId) p.tasks = payload.taches;
+          if (p.id == currentProjectId) p.tasks = payload.data;
           return p;
         });
 

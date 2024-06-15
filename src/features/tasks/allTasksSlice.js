@@ -14,8 +14,8 @@ const initialState = {
 export const getAllTasks = createAsyncThunk(
   'allTasks/getTasks',
   async (_, thunkAPI) => {
-    const user = getUserFromLocalStorage();
-    let url = `/taches/${user.email}`;
+    const userId = getUserFromLocalStorage().id;
+    let url = `projects/tasks/getAllTaskByUserId/${userId}`;
 
     try {
       const resp = await customFetch.get(url);
@@ -30,7 +30,7 @@ export const updateTaskState = createAsyncThunk(
   'allTasks/updateTaskState',
   async (info, thunkAPI) => {
     try {
-      const resp = await customFetch.post('/taches/modifierEtat', info);
+      const resp = await customFetch.post('projects/tasks/editState', info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -66,35 +66,37 @@ const allTasksSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllTasks.fulfilled, (state, { payload }) => {
+
+        console.log(payload.data , "inside all task data - 70")
         state.isLoading = false;
-        state.tasks = payload.taches;
+        state.tasks = payload.data;
         state.mapedTasks = mapData(state.tasks);
-        console.log(`statemapedtasks ${state.mapedTasks.lanes}`);
-        state.totalTasks = payload.taches.length;
-        console.log(payload.taches);
+        state.totalTasks = payload.data.length;
       })
       .addCase(getAllTasks.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload.message);
       })
+
       .addCase(updateTaskState.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(updateTaskState.fulfilled, (state, { payload }) => {
         state.isLoading = false;
+        const updatedTask = payload.data;
         state.tasks = state.tasks.map((task) => {
-          if (task.id == payload.tache.id)
-            return { ...task, etat: payload.tache.etat };
+          if (task.id === updatedTask.id) {
+            return { ...task, status: updatedTask.status };
+          }
           return task;
         });
-        state.mapedTasks = mapData(state.tasks);
-
-        //console.log(payload.tache);
+        state.mapedTasks = mapData(state.tasks, true); // Pass true if manager view
       })
+
       .addCase(updateTaskState.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
-      });
+        toast.error(payload.message);
+      })
   },
 });
 export default allTasksSlice.reducer;
