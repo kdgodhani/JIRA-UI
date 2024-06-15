@@ -26,7 +26,6 @@ import Comment from "./Comment";
 import { getUserFromLocalStorage } from "../utils/localStorage";
 import { toast } from "react-toastify";
 import { getAllTasks } from "../features/tasks/allTasksSlice";
-import NumericInput from "react-numeric-input";
 import Form from "react-bootstrap/Form";
 import Button from "react-bootstrap/Button";
 import { setDashboardText } from "../features/user/userSlice";
