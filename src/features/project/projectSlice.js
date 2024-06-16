@@ -67,8 +67,8 @@ export const updateProject = createAsyncThunk(
   "projects/updateProject",
   async (updatedProject, thunkAPI) => {
     try {
-      const response = await customFetch.put(
-        `/projects/${updatedProject.id}`,
+      const response = await customFetch.post(
+        `/projects/updateOrDelete`,
         updatedProject
       );
       return response.data;
@@ -82,7 +82,11 @@ export const deleteProject = createAsyncThunk(
   "projects/deleteProject",
   async (projectId, thunkAPI) => {
     try {
-      const response = await customFetch.delete(`/projects/${projectId}`);
+      let deleteProject = {
+        id:projectId,
+        isActive:false
+      }
+      const response = await customFetch.post(`/projects/updateOrDelete`,deleteProject);
       return response.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -127,30 +131,12 @@ const allProjectsSlice = createSlice({
         toast.error(payload);
       })
 
-      // .addCase(updateProjectState.pending, (state) => {
-      //   state.isLoading = true;
-      // })
-      // .addCase(updateProjectState.fulfilled, (state, { payload }) => {
-      //   state.isLoading = false;
-      //   state.projects = state.projects.map((project) => {
-      //     if (project.id == payload.tache.id)
-      //       return { ...project, etat: payload.tache.etat };
-      //     return project;
-      //   });
-
-      //   console.log(payload.tache);
-      // })
-      // .addCase(updateProjectState.rejected, (state, { payload }) => {
-      //   state.isLoading = false;
-      //   toast.error(payload);
-      // })
-
       .addCase(updateProject.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(updateProject.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        const index = state.projects.findIndex((p) => p.id === payload.project.id);
+        const index = state.projects.findIndex((p) => p.id === payload.data[0].id);
         if (index !== -1) {
           state.projects[index] = payload.project;
         }
@@ -165,7 +151,7 @@ const allProjectsSlice = createSlice({
       })
       .addCase(deleteProject.fulfilled, (state, { payload }) => {
         state.isLoading = false;
-        state.projects = state.projects.filter((p) => p.id !== payload.projectId);
+        state.projects = state.projects.filter((p) => p.id !== payload.data[0].id);
         state.totalProjects--;
         toast.success("Project deleted successfully");
       })

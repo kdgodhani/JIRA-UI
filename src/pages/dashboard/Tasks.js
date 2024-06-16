@@ -10,6 +10,7 @@ import { useState } from "react";
 import { updateTaskState } from "../../features/tasks/allTasksSlice";
 import { TaskModal } from "../../components/TaskModal";
 import { Divider } from "@mui/material";
+import { RiArrowGoBackLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
 import { getCurrentTask } from "../../features/currentProject/currentProjectSlice";
 import { setDashboardText } from "../../features/user/userSlice";
@@ -17,36 +18,20 @@ import { setDashboardText } from "../../features/user/userSlice";
 export const Tasks = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
   const [currentTaskId, setCurrentTaskId] = useState(-1);
-  const [localTasks, setLocalTasks] = useState([]);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const { isLoading, tasks, totalTasks } = useSelector(
-    (store) => store.allTasks
-  );
+  const { isLoading, tasks, totalTasks } = useSelector((store) => store.allTasks);
 
   useEffect(() => {
-    dispatch(getAllTasks()).then((action) => {
-      if (action.payload) {
-        setLocalTasks(action.payload);
-      }
-    });
+    dispatch(getAllTasks());
     dispatch(setDashboardText("Received Tasks"));
   }, [dispatch]);
 
   const handleDragEnd = async (cardId, sourceLaneId, targetLaneId) => {
     const info = { idTask: cardId, newState: targetLaneId };
-    setLocalTasks((prevTasks) =>
-      prevTasks.map((task) =>
-        task._id === cardId ? { ...task, state: targetLaneId } : task
-      )
-    );
     await dispatch(updateTaskState(info));
-    dispatch(getAllTasks()).then((action) => {
-      if (action.payload) {
-        setLocalTasks(action.payload);
-      }
-    });
+    await dispatch(getAllTasks());
   };
 
   const toggleModal = () => {
@@ -82,7 +67,7 @@ export const Tasks = () => {
             click on the task to see more
           </p>
           <Board
-            data={mapData(localTasks, false)}
+            data={mapData(tasks, false)}
             editable
             cardDraggable
             style={{ backgroundColor: " #F6F2FF" }}

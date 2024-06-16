@@ -11,11 +11,19 @@ import {
   clearCurrentProjectState,
   getProjectMembers,
 } from "../features/currentProject/currentProjectSlice";
+import {
+  deleteProject,
+  updateProject,
+  getAllProjects
+} from "../features/project/projectSlice";
 import { toggleSidebar } from "../features/user/userSlice";
+import styled from "styled-components";
 
 import React, { useEffect, useState } from "react";
 import { stringAvatar } from "../utils/utilsFunctions";
-import { Avatar, AvatarGroup, Stack } from "@mui/material";
+// import { Avatar, AvatarGroup, Stack } from "@mui/material";
+import { Avatar, AvatarGroup, Stack, Modal, TextField, Button } from "@mui/material";
+
 import { urlBase } from "../utils/axios";
 import UserAvatar from "./UserAvatar";
 import { MdDelete,MdModeEdit ,MdControlPoint  } from "react-icons/md";
@@ -24,10 +32,11 @@ import { getUserFromLocalStorage } from "../utils/localStorage";
 const Project = ({
   id,
   name,
-  members = [], // Provide default value
+  members = [],
   createdDateTime: start,
   createdBy: manager,
   isSidebarOpen,
+  fetchProjects, 
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -40,26 +49,11 @@ const Project = ({
     (item, index) => members.findIndex((i) => i.memberId === item.memberId) === index
   );
 
-  function timePassed(dateString) {
-    const date = new Date(dateString);
-    const now = new Date();
-    const differenceInMilliseconds = now - date;
-    const differenceInDays = differenceInMilliseconds / (1000 * 60 * 60 * 24);
-    return Math.floor(differenceInDays);
-  }
-
   const [tasks, setTasks] = useState([]);
-  // const getTasksByProject = async (projectId) =>
-  //   await fetch(`${urlBase}projects/${projectId}/tasks`).then(
-  //     async (response) => {
-  //       if (response.ok) {
-  //         const data = await response.json();
-  //         setTasks(data.tasks);
-  //       } else {
-  //         console.log(response);
-  //       }
-  //     }
-  //   );
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [updatedName, setUpdatedName] = useState(name);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [projectData, setProjectData] = useState({ name });
 
   const getTasksByProject = async (projectId) => {
     const user = getUserFromLocalStorage();
@@ -73,8 +67,6 @@ const Project = ({
       });
       if (response.ok) {
         const data = await response.json();
-
-        // console.log(data.data, "this is data ---- 85")
         setTasks(data.data);
       } else {
         console.log('Error fetching tasks:', response.message);
@@ -83,7 +75,20 @@ const Project = ({
       console.log('Error fetching tasks:', error.message);
     }
   };
-  
+
+  const handleUpdate = async () => {
+    const updatedProject = { id, name: updatedName };
+
+    await dispatch(updateProject(updatedProject))
+    .then(() => dispatch(getAllProjects()));
+    setUpdateModalOpen(false);
+  };
+
+  const handleDelete = async () => {
+    await dispatch(deleteProject(id))
+    .then(() => dispatch(getAllProjects()));
+
+  };
 
   return (
     <Wrapper>
@@ -96,19 +101,9 @@ const Project = ({
       <div className="content">
         <div className="content-center">
           <ProjectInfo icon={<FaCalendarAlt />} text={`Start ${date}`} />
-          <ProjectInfo
-            icon={<FaBriefcase />}
-            // text={`Since ${timePassed(start)} days`}
-            text={`Since 0 days`}
-          />
-          <ProjectInfo
-            icon={<IoPeopleOutline />}
-            text={` ${tasks.length} tasks`}
-          />
-          <ProjectInfo
-            icon={<IoPeopleOutline />}
-            text={` ${uniqueMembers.length} members`}
-          />
+          <ProjectInfo icon={<FaBriefcase />} text={`Since 0 days`} />
+          <ProjectInfo icon={<IoPeopleOutline />} text={` ${tasks.length} tasks`} />
+          <ProjectInfo icon={<IoPeopleOutline />} text={` ${uniqueMembers.length} members`} />
           <div style={{ height: "25", float: "right" }}>
             <AvatarGroup max={4} sx={{ marginLeft: "10%" }}>
               {uniqueMembers.map((item) => (
@@ -117,8 +112,8 @@ const Project = ({
             </AvatarGroup>
           </div>
         </div>
-        {/* <footer>
-          <div className="actions" style={{ float: "center" }}>
+        <footer className="footer-container">
+          <div className="actions">
             <Link
               to={{
                 pathname: "/project-details",
@@ -138,80 +133,84 @@ const Project = ({
             </Link>
 
             <button
-                className="button-81"
-                role="button"
-                title="Update"
-                // onClick={toggleAddMemberForm}
-                style={{
-                  marginLeft: "40%",
-                  marginRight: "40%",
-                  padding: "3px",
-                  marginBottom: "2%",
-                }}
-              >
-                <MdOutlineAddCircleOutline style={{ fontSize: "larger" }} />
-              </button>
+              className="button-81"
+              role="button"
+              title="Update"
+              onClick={() => setUpdateModalOpen(true)}
+            >
+              <MdModeEdit style={{ fontSize: "large" }} />
+            </button>
 
-              <button
-                className="button-81"
-                role="button"
-                title="Delete"
-                // onClick={toggleAddMemberForm}
-                style={{
-                  marginLeft: "40%",
-                  marginRight: "40%",
-                  padding: "3px",
-                  marginBottom: "2%",
-                }}
-              >
-                <MdOutlineAddCircleOutline style={{ fontSize: "larger" }} />
-              </button>
+            <button
+              className="button-81"
+              role="button"
+              title="Delete"
+              onClick={() => setDeleteModalOpen(true)}
+            >
+              <MdDelete style={{ fontSize: "large" }} />
+            </button>
           </div>
-        </footer> */}
-
-<footer className="footer-container">
-      <div className="actions">
-        <Link
-          to={{
-            pathname: "/project-details",
-            state: { currentProject: { id, name, members, start } },
-          }}
-          className="btn edit-btn"
-          onClick={() => {
-            const project = { id, name, members, start };
-
-            console.log(project,"project ---- 191")
-            dispatch(clearCurrentProjectState());
-            dispatch(setCurrentProject(project));
-            dispatch(getProjectTasks(project.id));
-            dispatch(getProjectMembers(project.id));
-            if (isSidebarOpen) dispatch(toggleSidebar());
-          }}
-        >
-          See more
-        </Link>
-
-        <button
-          className="button-81"
-          role="button"
-          title="Update"
-        >
-          <MdDelete style={{ fontSize: "large" }} />
-        </button>
-
-        <button
-          className="button-81"
-          role="button"
-          title="Delete"
-        >
-          <MdModeEdit  style={{ fontSize: "large" }} />
-        </button>
+        </footer>
       </div>
-    </footer>
-      </div>
+
+      {updateModalOpen && (
+        <ModalContainer>
+          <ModalContent>
+            <h2>Update Project</h2>
+            <TextField
+              label="Project Name"
+              value={projectData.name}
+              onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
+              fullWidth
+            />
+            <Button variant="contained" color="primary" onClick={handleUpdate}>
+              Update
+            </Button>
+            <Button variant="contained" color="secondary" onClick={() => setUpdateModalOpen(false)}>
+              Cancel
+            </Button>
+          </ModalContent>
+        </ModalContainer>
+      )}
+
+      {deleteModalOpen && (
+        <ModalContainer>
+          <ModalContent>
+            <h2>Are you sure you want to delete this project?</h2>
+            <Button variant="contained" color="primary" onClick={handleDelete}>
+              Yes
+            </Button>
+            <Button variant="contained" color="secondary" onClick={() => setDeleteModalOpen(false)}>
+              No
+            </Button>
+          </ModalContent>
+        </ModalContainer>
+      )}
     </Wrapper>
   );
 };
 
+const ModalContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(0, 0, 0, 0.5); /* Semi-transparent background */
+  z-index: 1000; /* Ensures the modal is on top */
+`;
+
+const ModalContent = styled.div`
+  background: #fff;
+  padding: 20px;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  width: 400px; /* Fixed width */
+  max-width: 90%; /* Ensures it is responsive on smaller screens */
+  text-align: center; /* Center-align text */
+`;
 
 export default Project;
