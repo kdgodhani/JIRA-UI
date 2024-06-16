@@ -12,7 +12,8 @@ export const mapData = (tasks, manager) => {
       title,
       progress,
       comments,
-      projectName
+      projectName,
+      priority
     }) => {
       const responsibleName = responsible ? responsible: "Unknown";
 
@@ -30,6 +31,7 @@ export const mapData = (tasks, manager) => {
         progress,
         comments,
         status,
+        priority
       };
     }
   );

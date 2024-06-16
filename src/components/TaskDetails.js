@@ -13,6 +13,8 @@ import {
   addCommentToTask,
   getCurrentTask,
   updateTaskProgress,
+  updateCommentToTask,
+  deleteCommentToTask
 } from "../features/currentProject/currentProjectSlice";
 import { useDispatch, useSelector } from "react-redux";
 import Comment from "./Comment";
@@ -87,8 +89,30 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
     await dispatch(addCommentToTask(info)).then(
       dispatch(getCurrentTask(taskId))
     );
-    dispatch(getAllTasks());
+    // dispatch(getAllTasks());
   };
+  const updateComment = async (data) => {
+    // console.log(data,"inside - 95")
+    if (task) {
+      console.log(task , "--- inside updaye - 97")
+      const info = {
+        commentId: data.comId,
+        text: data.text,
+      };
+      await dispatch(updateCommentToTask(info)).then(dispatch(getCurrentTask(taskId)));
+      // dispatch(getAllTasks());
+    }
+  };
+  const deleteComment = async (data) => {
+    // console.log(data,"this data inside - 106")
+    if (task) {
+      console.log(task,"task --- 109")
+      const info = { commentId: data.comIdToDelete , isActive:false };
+      await dispatch(deleteCommentToTask(info)).then(dispatch(getCurrentTask(taskId)));
+      // dispatch(getAllTasks());
+    }
+  };
+  
 
   const handlePriorityChange = async (e) => {
     const newPriority = e.target.value;
@@ -335,12 +359,24 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
           )}
         </div>
 
-        <div className="cardinfo-box">
+        {/* <div className="cardinfo-box">
           <div className="cardinfo-box-title">
             <BiCommentDetail />
             <p>Comments</p>
           </div>
           <Comment comments={task?.comments} addComment={addComment} />
+        </div> */}
+         <div className="cardinfo-box">
+          <div className="cardinfo-box-title">
+            <BiCommentDetail />
+            <p>Comments</p>
+          </div>
+          <Comment 
+            comments={task?.comments} 
+            addComment={addComment} 
+            updateComment={updateComment} 
+            deleteComment={deleteComment} 
+          />
         </div>
       </div>
     </Wrapper>

@@ -113,13 +113,13 @@ const Project = ({
             icon={<IoPeopleOutline />}
             text={` ${uniqueMembers.length} members`}
           />
-          <div style={{ height: "25", float: "right" }}>
+          {/* <div style={{ height: "25", float: "right" }}>
             <AvatarGroup max={4} sx={{ marginLeft: "10%" }}>
               {uniqueMembers.map((item) => (
                 <UserAvatar key={item.memberId} id={item.memberId} name={item.memberName} />
               ))}
             </AvatarGroup>
-          </div>
+          </div> */}
         </div>
         <footer className="footer-container">
           <div className="actions">

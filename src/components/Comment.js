@@ -2,8 +2,13 @@ import React, { useState } from "react";
 import { CommentSection } from "react-comments-section";
 import Wrapper from "../assets/wrappers/Comment";
 import { getUserFromLocalStorage } from "../utils/localStorage";
+// import {
+//   addCommentToTask,
+// updateCommentToTask,
+// deleteCommentToTask
+// } from "../features/currentProject/currentProjectSlice";
 
-const Comment = ({ addComment, comments }) => {
+const Comment = ({ addComment, updateComment, deleteComment, comments }) => {
   //const { currentTask } = useSelector((store) => store.currentProject);
 
   // const comments = currentTask.commentaires;
@@ -83,23 +88,34 @@ const Comment = ({ addComment, comments }) => {
           color: "#30336b",
           borderRadious: "10%",
         }}
-        onSubmitAction={(
-          newData
-          /* : {
-            userId: string
-            comId: string
-            avatarUrl: string
-            userProfile?: string
-            fullName: string
-            text: string
-            replies: any
-            commentId: string
-            }*/
-        ) => {
+        // onSubmitAction={(
+        //   newData
+        //  : {
+        //     userId: string
+        //     comId: string
+        //     avatarUrl: string
+        //     userProfile?: string
+        //     fullName: string
+        //     text: string
+        //     replies: any
+        //     commentId: string
+        //     }
+        // ) => {
+        //   addComment(newData);
+        // }}
+        // currentData={(data) => {
+        // }}
+
+        onSubmitAction={(newData) => {
           addComment(newData);
         }}
-        currentData={(data) => {
+        onEditAction={(data) => {
+          updateComment(data);
         }}
+        onDeleteAction={(data) => {
+          deleteComment(data);
+        }}
+        currentData={(data) => {}}
       />
     </Wrapper>
   );

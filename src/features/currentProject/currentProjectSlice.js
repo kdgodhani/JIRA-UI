@@ -179,11 +179,35 @@ export const updateTaskDeadLine = createAsyncThunk(
     }
   }
 );
+
+// Comment 
 export const addCommentToTask = createAsyncThunk(
   "allTasks/addComment",
   async (info, thunkAPI) => {
     try {
       const resp = await customFetch.post("projects/tasks/addComment", info);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const deleteCommentToTask = createAsyncThunk(
+  "allTasks/deleteComment",
+  async (info, thunkAPI) => {
+    try {
+      const resp = await customFetch.post("projects/tasks/updateOrDeleteComment", info);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+export const updateCommentToTask = createAsyncThunk(
+  "allTasks/updadteComment",
+  async (info, thunkAPI) => {
+    try {
+      const resp = await customFetch.post("projects/tasks/updateOrDeleteComment", info);
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
@@ -430,6 +454,49 @@ const currentProjectSlice = createSlice({
         toast.success("Comment recorded!");
       })
       .addCase(addCommentToTask.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error(payload && payload.message?payload.message:"Server Error");
+      })
+
+      .addCase(updateCommentToTask.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(updateCommentToTask.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        // const editedTask = payload.data;
+
+        // console.log(state.tasks,"state.tasks -- 468")
+        // state.tasks = state.tasks.map((task) => {
+        //   if (task.id === editedTask.id) {
+        //     return editedTask;
+        //   }
+        //   return task;
+        // });
+
+        toast.success("Comment recorded!");
+      })
+      .addCase(updateCommentToTask.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error(payload && payload.message?payload.message:"Server Error");
+      })
+
+      .addCase(deleteCommentToTask.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteCommentToTask.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        // const editedTask = payload.data;
+
+        // state.tasks = state.tasks.map((task) => {
+        //   if (task.id === editedTask.id) {
+        //     return editedTask;
+        //   }
+        //   return task;
+        // });
+
+        toast.success("Comment recorded!");
+      })
+      .addCase(deleteCommentToTask.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload && payload.message?payload.message:"Server Error");
       })
