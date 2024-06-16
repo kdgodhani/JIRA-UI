@@ -131,7 +131,7 @@ export const updateTaskTitle = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -142,7 +142,7 @@ export const updateTaskDesc = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -153,7 +153,7 @@ export const updateTaskProgress = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -164,7 +164,7 @@ export const updateTaskPriority = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -175,7 +175,7 @@ export const updateTaskDeadLine = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/modify", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -186,7 +186,7 @@ export const addCommentToTask = createAsyncThunk(
       const resp = await customFetch.post("projects/tasks/addComment", info);
       return resp.data;
     } catch (error) {
-      return thunkAPI.rejectWithValue(error.message);
+      return thunkAPI.rejectWithValue(error.response.data);
     }
   }
 );
@@ -237,7 +237,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(getProjectMembers.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(getProjectTasks.pending, (state) => {
@@ -249,7 +249,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(getProjectTasks.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(addMemberToProject.pending, (state) => {
@@ -264,22 +264,12 @@ const currentProjectSlice = createSlice({
       })
       .addCase(addMemberToProject.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskState.pending, (state) => {
         state.isLoading = true;
       })
-      // .addCase(updateTaskState.fulfilled, (state, { payload }) => {
-      //   state.isLoading = false;
-      //   state.tasks = state.tasks.map((task) => {
-      //     if (task.id == payload.data.id)
-      //       return { ...task, state: payload.data.state };
-      //     return task;
-      //   });
-      //   state.mapedTasks = mapData(state.tasks);
-      // })
-
       .addCase(updateTaskState.fulfilled, (state, { payload }) => {
         state.isLoading = false;
         const updatedTask = payload.data;
@@ -291,10 +281,9 @@ const currentProjectSlice = createSlice({
         });
         state.mapedTasks = mapData(state.tasks, true); // Pass true if manager view
       })
-
       .addCase(updateTaskState.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(createTask.pending, (state) => {
@@ -309,7 +298,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(createTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(deleteTask.pending, (state) => {
@@ -324,7 +313,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(deleteTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskTitle.pending, (state) => {
@@ -345,7 +334,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskTitle.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error, the title has not been modified");
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskDesc.pending, (state) => {
@@ -366,9 +355,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskDesc.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(
-          "there was an error, the description has not been modified"
-        );
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskDeadLine.pending, (state) => {
@@ -389,7 +376,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskDeadLine.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error, the deadLine was not modified");
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskProgress.pending, (state) => {
@@ -406,7 +393,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskProgress.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error connecting to the server");
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskPriority.pending, (state) => {
@@ -423,7 +410,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(updateTaskPriority.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error connecting to the server");
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(addCommentToTask.pending, (state) => {
@@ -444,7 +431,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(addCommentToTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error("there was an error, the comment was not saved");
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(getCurrentTask.pending, (state) => {
@@ -459,7 +446,7 @@ const currentProjectSlice = createSlice({
       })
       .addCase(getCurrentTask.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
 

@@ -49,13 +49,12 @@ const userSlice = createSlice({
         state.user = user;
         addUserToLocalStorage(user);
         toast.success(`Hello There ${user.name}`);
-        console.log(user);
       })
       .addCase(registerUser.rejected, (state, { payload }) => {
         state.isLoading = false;
-        // console.log(payload.error,"this is add case -- error on register");
-        toast.error(`error : ${payload.message} `);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
+
       .addCase(loginUser.pending, (state) => {
         state.isLoading = true;
       })
@@ -69,25 +68,23 @@ const userSlice = createSlice({
       })
       .addCase(loginUser.rejected, (state, { payload }) => {
         state.isLoading = false;
-        // console.log(payload,"reject Error on login -time ");
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
+
       .addCase(updateUser.pending, (state) => {
         state.isLoading = true;
       })
       .addCase(updateUser.fulfilled, (state, { payload }) => {
         const user = payload.data[0];
-        console.log(user);
         state.isLoading = false;
         state.user = user;
-        //addUserToLocalStorage(user);
-
         toast.success(`User Updated!`);
       })
       .addCase(updateUser.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
+
       .addCase(clearStore.rejected, () => {
         toast.error("There was an error..");
       })
@@ -109,8 +106,9 @@ const userSlice = createSlice({
       })
       .addCase(getUserImage.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
+
       .addCase(getUserParticipationProjects.pending, (state) => {
         state.isLoading = true;
       })
@@ -121,7 +119,7 @@ const userSlice = createSlice({
       })
       .addCase(getUserParticipationProjects.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+         toast.error(payload && payload.message?payload.message:"Server Error");
       });
   },
 });
@@ -206,7 +204,7 @@ export const updateUser = createAsyncThunk(
       // console.log(resp.data);
       return resp.data;
     } catch (error) {
-      return checkForUnauthorizedResponse(error.response.data, thunkAPI);
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 );

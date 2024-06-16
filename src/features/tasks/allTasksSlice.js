@@ -73,7 +73,7 @@ const allTasksSlice = createSlice({
       })
       .addCase(getAllTasks.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateTaskState.pending, (state) => {
@@ -90,10 +90,9 @@ const allTasksSlice = createSlice({
         });
         state.mapedTasks = mapData(state.tasks, true); // Pass true if manager view
       })
-
       .addCase(updateTaskState.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
   },

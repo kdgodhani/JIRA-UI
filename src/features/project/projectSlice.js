@@ -128,7 +128,7 @@ const allProjectsSlice = createSlice({
       })
       .addCase(getAllProjects.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(updateProject.pending, (state) => {
@@ -142,8 +142,9 @@ const allProjectsSlice = createSlice({
         }
         toast.success("Project updated successfully");
       })
-      .addCase(updateProject.rejected, (state) => {
+      .addCase(updateProject.rejected, (state, { payload }) => {
         state.isLoading = false;
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(deleteProject.pending, (state) => {
@@ -155,8 +156,9 @@ const allProjectsSlice = createSlice({
         state.totalProjects--;
         toast.success("Project deleted successfully");
       })
-      .addCase(deleteProject.rejected, (state) => {
+      .addCase(deleteProject.rejected, (state, { payload }) => {
         state.isLoading = false;
+        toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
       .addCase(createProject.pending, (state) => {
@@ -169,23 +171,9 @@ const allProjectsSlice = createSlice({
       })
       .addCase(createProject.rejected, (state, { payload }) => {
         state.isLoading = false;
-        toast.error(payload.message);
+        toast.error(payload && payload.message?payload.message:"Server Error");
       });
-    /*.addCase(getTasksByProject.pending, (state) => {})
-      .addCase(getTasksByProject.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
-        const currentProjectId = payload.idProjet;
-        state.projects = state.projects.map((p) => {
-          if (p.id == currentProjectId) p.tasks = payload.data;
-          return p;
-        });
 
-        //toast.success("tasks got from backend");
-      })
-      .addCase(getTasksByProject.rejected, (state, { payload }) => {
-        state.isLoading = false;
-        toast.error(payload);
-      })*/
   },
 });
 
