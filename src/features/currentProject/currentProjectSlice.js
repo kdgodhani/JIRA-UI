@@ -157,6 +157,17 @@ export const updateTaskProgress = createAsyncThunk(
     }
   }
 );
+export const updateTaskPriority = createAsyncThunk(
+  "allTasks/updateTaskPriority",
+  async (info, thunkAPI) => {
+    try {
+      const resp = await customFetch.post("projects/tasks/modify", info);
+      return resp.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.message);
+    }
+  }
+);
 export const updateTaskDeadLine = createAsyncThunk(
   "allTasks/updateTaskDeadLine",
   async (info, thunkAPI) => {
@@ -394,6 +405,23 @@ const currentProjectSlice = createSlice({
         toast.success("progress modified!");
       })
       .addCase(updateTaskProgress.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error("there was an error connecting to the server");
+      })
+
+      .addCase(updateTaskPriority.pending, (state) => {
+        //state.isLoading = true;
+      })
+      .addCase(updateTaskPriority.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        const editedTask = payload.data;
+
+        state.currentTask = editedTask;
+        //console.log("currentTask : " + state.currentTask);
+
+        toast.success("progress modified!");
+      })
+      .addCase(updateTaskPriority.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error("there was an error connecting to the server");
       })

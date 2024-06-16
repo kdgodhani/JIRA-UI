@@ -19,11 +19,13 @@ import CustomCard from "../../components/CustomCard";
 
 export const Tasks = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
-  const [currentTaskId, setCurrentTaskId] = useState(-1);
+  const [currentTaskId, setCurrentTaskId] = useState({});
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const { isLoading, tasks, totalTasks } = useSelector((store) => store.allTasks);
+
+  console.log(tasks,"this is task --- ")
 
   useEffect(() => {
     dispatch(getAllTasks());
@@ -87,6 +89,7 @@ export const Tasks = () => {
             <TaskModal
               currentTaskId={currentTaskId}
               toggleModal={toggleModal}
+              manager={true}
             />
           )}
         </div>

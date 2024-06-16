@@ -4,7 +4,7 @@ import { MdDelete } from "react-icons/md";
 import styled from "styled-components";
 
 const StyledCard = styled(Card)`
-  width: 300px;
+  width: 250px;
   height: 150px;
   margin-bottom: 8px;
 `;
@@ -13,7 +13,7 @@ const StyledCardContent = styled(CardContent)`
   padding: 8px;
 `;
 
-const CustomCard = ({ id, title, description, label, onDelete, onClick }) => {
+const CustomCard = ({ id, title, description, label,priority, onDelete, onClick }) => {
   return (
     <StyledCard onClick={() => onClick(id)}>
       <CardHeader
@@ -38,6 +38,9 @@ const CustomCard = ({ id, title, description, label, onDelete, onClick }) => {
         </Typography>
         <Typography variant="body2" color="textSecondary" component="p">
           {label}
+        </Typography>
+        <Typography variant="body2" color="textSecondary" component="p">
+          {priority}
         </Typography>
       </StyledCardContent>
     </StyledCard>

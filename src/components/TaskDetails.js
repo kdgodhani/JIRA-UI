@@ -9,6 +9,7 @@ import {
   updateTaskDeadLine,
   updateTaskDesc,
   updateTaskTitle,
+  updateTaskPriority,
   addCommentToTask,
   getCurrentTask,
   updateTaskProgress,
@@ -20,37 +21,34 @@ import { toast } from "react-toastify";
 import { getAllTasks } from "../features/tasks/allTasksSlice";
 import Form from "react-bootstrap/Form";
 
-
 function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   const dispatch = useDispatch();
   const { currentTask } = useSelector((store) => store.currentProject);
+
   const [isEditingTitle, setIsEditingTitle] = useState(false);
   const [isEditingDesc, setIsEditingDesc] = useState(false);
   const [newTitle, setNewTitle] = useState("");
   const [newDesc, setNewDesc] = useState("");
   const [editProgressFormIsOpen, setEditProgressFormIsOpen] = useState(false);
   const [newProgress, setNewProgress] = useState(0);
+  const [priority, setPriority] = useState("low");
+  let task = currentTask[0];
 
- 
-  // useEffect(() => {
-  //   dispatch(getCurrentTask(taskId));
-  // }, [taskId]);
-
-  let task = currentTask[0]
-
-  
   useEffect(() => {
     if (task) {
       setNewTitle(task.title);
       setNewDesc(task.description);
       setNewProgress(task.progress);
+      setPriority(task.priority);
     }
   }, [task]);
 
   const handleTitleSubmit = async (e) => {
     e.preventDefault();
     const info = { taskId: task.id, newTitle: newTitle };
-    await dispatch(updateTaskTitle(info)).then(dispatch(getCurrentTask(taskId)));
+    await dispatch(updateTaskTitle(info)).then(
+      dispatch(getCurrentTask(taskId))
+    );
     setIsEditingTitle(false);
   };
 
@@ -64,18 +62,21 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   const updateDeadLine = async (newDeadLine) => {
     if (manager) {
       const info = { taskId: task.id, newDeadLine: newDeadLine };
-      await dispatch(updateTaskDeadLine(info)).then(dispatch(getCurrentTask(taskId)));
+      await dispatch(updateTaskDeadLine(info)).then(
+        dispatch(getCurrentTask(taskId))
+      );
     } else {
-      toast.error("only the project manager can modify the deadline");
+      toast.error("Only the project manager can modify the deadline");
     }
   };
 
   const updateProgress = async (value) => {
     value.preventDefault();
     const info = { taskId: task.id, newProgress: newProgress };
-    await dispatch(updateTaskProgress(info)).then(dispatch(getCurrentTask(taskId)));
+    await dispatch(updateTaskProgress(info)).then(
+      dispatch(getCurrentTask(taskId))
+    );
   };
-
 
   const addComment = async (data) => {
     const info = {
@@ -83,14 +84,30 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
       authorId: getUserFromLocalStorage().id,
       taskId: task.id,
     };
-    await dispatch(addCommentToTask(info)).then(dispatch(getCurrentTask(taskId)));
+    await dispatch(addCommentToTask(info)).then(
+      dispatch(getCurrentTask(taskId))
+    );
     dispatch(getAllTasks());
   };
 
+  const handlePriorityChange = async (e) => {
+    const newPriority = e.target.value;
+    setPriority(newPriority);
+    const info = { taskId: task.id, newPriority };
+    await dispatch(updateTaskPriority(info)).then(
+      dispatch(getCurrentTask(taskId))
+    );
+  };
 
   function toggleEditProgressForm() {
     setEditProgressFormIsOpen(!editProgressFormIsOpen);
   }
+
+  const priorityColors = {
+    high: "red",
+    medium: "yellow",
+    low: "green",
+  };
 
   return (
     <Wrapper>
@@ -178,6 +195,59 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
           )}
         </div>
 
+        {/* <div className="cardinfo-box">
+          <div className="cardinfo-box-title">
+            <Tag />
+            <p>Priority</p>
+          </div>
+          <select
+            value={priority}
+            onChange={handlePriorityChange}
+            style={{
+              backgroundColor: priorityColors[priority],
+              color: "white",
+              padding: "5px",
+              border: "none",
+              borderRadius: "5px",
+              cursor: "pointer",
+            }}
+            disabled={!manager}
+          >
+            <option value="High" style={{ color: "red" }}>
+              High
+            </option>
+            <option value="Medium" style={{ color: "yellow" }}>
+              Medium
+            </option>
+            <option value="Low" style={{ color: "green" }}>
+              Low
+            </option>
+          </select>
+        </div> */}
+
+<div className="cardinfo-box">
+          <div className="cardinfo-box-title">
+            <Tag />
+            <p>Priority</p>
+          </div>
+          <select
+            value={task?.priority}
+            onChange={handlePriorityChange}
+            style={{
+              padding: "5px",
+              backgroundColor: priority === "high" ? "red" : priority === "medium" ? "yellow" : "green",
+              color: priority === "medium" ? "black" : "white",
+              border: "none",
+              borderRadius: "4px",
+              marginTop: "5px", // Add margin to separate from the previous box
+            }}
+          >
+            <option value="high">High</option>
+            <option value="medium">Medium</option>
+            <option value="low">Low</option>
+          </select>
+        </div>
+
         <div className="cardinfo-box">
           <div className="cardinfo-box-title">
             <Calendar />
@@ -185,15 +255,12 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
           </div>
           <input
             type="date"
-            value={
-              task?.deadline || new Date().toISOString().substr(0, 10)
-            }
+            value={task?.deadline || new Date().toISOString().substr(0, 10)}
             min={new Date().toISOString().substr(0, 10)}
             onChange={(event) => updateDeadLine(event.target.value)}
             readOnly={!manager}
           />
         </div>
-        <header />
 
         <div className="cardinfo-box">
           <div className="cardinfo-box-title">
