@@ -36,7 +36,7 @@ const Project = ({
   createdDateTime: start,
   createdBy: manager,
   isSidebarOpen,
-  fetchProjects, 
+  fetchProjects, // Callback to refresh project list
 }) => {
   const dispatch = useDispatch();
   useEffect(() => {
@@ -101,9 +101,18 @@ const Project = ({
       <div className="content">
         <div className="content-center">
           <ProjectInfo icon={<FaCalendarAlt />} text={`Start ${date}`} />
-          <ProjectInfo icon={<FaBriefcase />} text={`Since 0 days`} />
-          <ProjectInfo icon={<IoPeopleOutline />} text={` ${tasks.length} tasks`} />
-          <ProjectInfo icon={<IoPeopleOutline />} text={` ${uniqueMembers.length} members`} />
+          <ProjectInfo
+            icon={<FaBriefcase />}
+            text={`Since 0 days`}
+          />
+          <ProjectInfo
+            icon={<IoPeopleOutline />}
+            text={` ${tasks.length} tasks`}
+          />
+          <ProjectInfo
+            icon={<IoPeopleOutline />}
+            text={` ${uniqueMembers.length} members`}
+          />
           <div style={{ height: "25", float: "right" }}>
             <AvatarGroup max={4} sx={{ marginLeft: "10%" }}>
               {uniqueMembers.map((item) => (
@@ -159,9 +168,10 @@ const Project = ({
             <h2>Update Project</h2>
             <TextField
               label="Project Name"
-              value={projectData.name}
-              onChange={(e) => setProjectData({ ...projectData, name: e.target.value })}
+              value={updatedName}
+              onChange={(e) => setUpdatedName(e.target.value)}
               fullWidth
+              margin="normal"
             />
             <Button variant="contained" color="primary" onClick={handleUpdate}>
               Update
@@ -190,6 +200,7 @@ const Project = ({
   );
 };
 
+
 const ModalContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -212,5 +223,6 @@ const ModalContent = styled.div`
   max-width: 90%; /* Ensures it is responsive on smaller screens */
   text-align: center; /* Center-align text */
 `;
+
 
 export default Project;
