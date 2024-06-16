@@ -12,8 +12,10 @@ import { TaskModal } from "../../components/TaskModal";
 import { Divider } from "@mui/material";
 import { RiArrowGoBackLine } from "react-icons/ri";
 import { useNavigate } from "react-router-dom";
-import { getCurrentTask } from "../../features/currentProject/currentProjectSlice";
+import { getCurrentTask,deleteTask } from "../../features/currentProject/currentProjectSlice";
 import { setDashboardText } from "../../features/user/userSlice";
+import CustomCard from "../../components/CustomCard"; 
+
 
 export const Tasks = () => {
   const [modalIsOpen, setModalIsOpen] = useState(false);
@@ -44,6 +46,11 @@ export const Tasks = () => {
     setCurrentTaskId(taskId);
   };
 
+  const handleDelete = async (taskId) => {
+    await dispatch(deleteTask(taskId));
+    await dispatch(getAllTasks());
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -72,7 +79,9 @@ export const Tasks = () => {
             cardDraggable
             style={{ backgroundColor: " #F6F2FF" }}
             handleDragEnd={handleDragEnd}
-            onCardClick={(cardId) => handleCardClick(cardId)}
+            // components={{ Card: CustomCard }}
+            // onCardClick={(cardId) => handleCardClick(cardId)}
+            components={{ Card: (props) => <CustomCard {...props} onDelete={handleDelete} onClick={handleCardClick} /> }}
           />
           {modalIsOpen && (
             <TaskModal

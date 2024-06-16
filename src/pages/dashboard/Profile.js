@@ -1,4 +1,4 @@
-
+import React from "react";
 import { useEffect, useState } from "react";
 
 import { useDispatch, useSelector } from "react-redux";
@@ -8,7 +8,6 @@ import {
   setDashboardText,
   updateUser,
 } from "../../features/user/userSlice";
-import React from "react";
 import {
   MDBCol,
   MDBContainer,
@@ -70,7 +69,7 @@ const Profile = () => {
     const data = new FormData();
     data.append("image", imageUrl);
     const userId = getUserFromLocalStorage().id;
-    axios.post(`${urlBase}/image/${userId}`, data).then(
+    axios.post(`${urlBase}image/${userId}`, data).then(
       (res) => {
         toast.success("The image has been updated");
         toggleForm();
@@ -233,7 +232,7 @@ const Profile = () => {
                   </MDBCardTitle>
                 </MDBCardBody>
                 <MDBCardFooter>
-                  <small className="text-muted">Created Projects</small>
+                  <small className="text-muted">Projects</small>
                 </MDBCardFooter>
               </MDBCard>
             </MDBCol>

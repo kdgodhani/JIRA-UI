@@ -23,29 +23,28 @@ import {
   getProjectTasks,
   updateTaskState,
   createTask,
+  deleteTask,
   getProjectMembers,
   addMemberToProject,
   getCurrentProject,
   getCurrentTask,
 } from "../../features/currentProject/currentProjectSlice";
 import { TaskModal } from "../../components/TaskModal";
-import { IoMdAdd } from "react-icons/io";
 import { toast } from "react-toastify";
-import { useLocation } from "react-router-dom";
 import { Avatar } from "@mui/material";
 import { stringAvatar } from "../../utils/utilsFunctions";
-import { RiArrowGoBackLine } from "react-icons/ri";
-import { useNavigate } from "react-router-dom";
-import { getAllTasks } from "../../features/tasks/allTasksSlice";
+import { getAllTasks,dele } from "../../features/tasks/allTasksSlice";
 import { setDashboardText } from "../../features/user/userSlice";
 import { MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { MDBCard, MDBCardHeader, MDBCardText } from "mdbreact";
+import CustomCard from "../../components/CustomCard"; 
 
 export const ProjectDetails = () => {
   const dispatch = useDispatch();
   useEffect(() => {
     dispatch(setDashboardText("Project Details"));
   }, [dispatch]);
+
   const { project } = useSelector((store) => store.currentProject);
   const { tasks, isLoading } = useSelector((store) => store.currentProject);
   const membersDup = useSelector((store) => store.currentProject).members;
@@ -131,6 +130,11 @@ export const ProjectDetails = () => {
     setEmailToAdd("");
   }
 
+  const handleDelete = async (taskId) => {
+    await dispatch(deleteTask(taskId));
+    await dispatch(getAllTasks());
+  };
+
   if (isLoading) {
     return <Loading />;
   }
@@ -204,16 +208,17 @@ export const ProjectDetails = () => {
                 }}
                 laneStyle={{ backgroundColor: " #D7CBF6" }}
                 handleDragEnd={handleDragEnd}
-                onCardClick={(cardId) => handleCardClick(cardId)}
+                // onCardClick={(cardId) => handleCardClick(cardId)}
+                components={{ Card: (props) => <CustomCard {...props} onDelete={handleDelete} onClick={handleCardClick} /> }}
               >
-                <NewCardForm
+                {/* <NewCardForm
                   descriptionPlaceholder="assigned to"
                   labelPlaceholder="deadline"
                   titlePlaceholder="title"
                   onSubmit={(card) => console.log(card,"--- Project Detail 213")}
                 >
                   <CardSubmitButton />
-                </NewCardForm>
+                </NewCardForm> */}
               </Board>
             </div>
           </MDBCol>

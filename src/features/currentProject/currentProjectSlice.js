@@ -12,7 +12,24 @@ const initialState = {
   tasks: [],
   project: {},
   currentTask: {},
+  
 };
+
+// this is for add member
+export const addMemberToProject = createAsyncThunk(
+  "allProjects/getProjects/addMember",
+  async (data, thunkAPI) => {
+    let url = `/projects/addMember`;
+
+    try {
+      const resp = await customFetch.post(url, data);
+      // console.log("postrequest sent");
+      return resp.data;
+    } catch (error) {
+      return checkForUnauthorizedResponse(error, thunkAPI);
+    }
+  }
+);
 export const getProjectMembers = createAsyncThunk(
   "allProjects/getProjects/getProjectMembers",
   async (projectId, thunkAPI) => {
@@ -40,35 +57,6 @@ export const getProjectTasks = createAsyncThunk(
   }
 );
 
-export const getCurrentTask = createAsyncThunk(
-  "allTasks/getCurrentTask",
-  async (taskId, thunkAPI) => {
-    let url = `projects/tasks/getTaskById/${taskId}`;
-
-    try {
-      const resp = await customFetch.get(url);
-      return resp.data;
-    } catch (error) {
-      return checkForUnauthorizedResponse(error, thunkAPI);
-    }
-  }
-);
-
-// this is for add member
-export const addMemberToProject = createAsyncThunk(
-  "allProjects/getProjects/addMember",
-  async (data, thunkAPI) => {
-    let url = `/projects/addMember`;
-
-    try {
-      const resp = await customFetch.post(url, data);
-      // console.log("postrequest sent");
-      return resp.data;
-    } catch (error) {
-      return checkForUnauthorizedResponse(error, thunkAPI);
-    }
-  }
-);
 
 // Project Detail page - create and upadte taskkkkk
 export const createTask = createAsyncThunk(
@@ -94,7 +82,21 @@ export const createTask = createAsyncThunk(
     }
   }
 );
-
+export const deleteTask = createAsyncThunk(
+  "allTasks/modifyTask",
+  async (taskId, thunkAPI) => {
+    try {
+      let deleteTask = {
+        taskId,
+        isActive:false
+      }
+      const response = await customFetch.post(`/projects/tasks/modify`,deleteTask);
+      return response.data;
+    } catch (error) {
+      return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
 export const updateTaskState = createAsyncThunk(
   "allTasks/updateTaskState",
   async (info, thunkAPI) => {
@@ -103,6 +105,20 @@ export const updateTaskState = createAsyncThunk(
       return resp.data;
     } catch (error) {
       return thunkAPI.rejectWithValue(error.response.data);
+    }
+  }
+);
+
+export const getCurrentTask = createAsyncThunk(
+  "allTasks/getCurrentTask",
+  async (taskId, thunkAPI) => {
+    let url = `projects/tasks/getTaskById/${taskId}`;
+
+    try {
+      const resp = await customFetch.get(url);
+      return resp.data;
+    } catch (error) {
+      return checkForUnauthorizedResponse(error, thunkAPI);
     }
   }
 );
@@ -281,6 +297,21 @@ const currentProjectSlice = createSlice({
         toast.success("task created successfully");
       })
       .addCase(createTask.rejected, (state, { payload }) => {
+        state.isLoading = false;
+        toast.error(payload.message);
+      })
+
+      .addCase(deleteTask.pending, (state) => {
+        state.isLoading = true;
+      })
+      .addCase(deleteTask.fulfilled, (state, { payload }) => {
+        state.isLoading = false;
+        const task = payload.data;
+        state.tasks = [...state.tasks, task];
+
+        toast.success("task created successfully");
+      })
+      .addCase(deleteTask.rejected, (state, { payload }) => {
         state.isLoading = false;
         toast.error(payload.message);
       })

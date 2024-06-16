@@ -66,8 +66,6 @@ const allTasksSlice = createSlice({
         state.isLoading = true;
       })
       .addCase(getAllTasks.fulfilled, (state, { payload }) => {
-
-        console.log(payload.data , "inside all task data - 70")
         state.isLoading = false;
         state.tasks = payload.data;
         state.mapedTasks = mapData(state.tasks);
@@ -97,6 +95,8 @@ const allTasksSlice = createSlice({
         state.isLoading = false;
         toast.error(payload.message);
       })
+
   },
 });
+
 export default allTasksSlice.reducer;
