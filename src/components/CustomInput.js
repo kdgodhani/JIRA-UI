@@ -15,7 +15,7 @@ const CustomInput = (props) => {
         master,
     } = props;
 
-    console.log(props,"inside custom input -- 28")
+    // console.log(props,"inside custom input -- 28")
     const [isCustomInput, setIsCustomInput] = useState(false);
     const [inputText, setInputText] = useState(defaultValue || "");
 
@@ -32,7 +32,7 @@ const CustomInput = (props) => {
         if (master) setIsCustomInput(true);
     }
 
-    console.log(isCustomInput,"isCustomInput --- 45")
+    // console.log(isCustomInput,"isCustomInput --- 45")
 
     return (
         <Wrapper>

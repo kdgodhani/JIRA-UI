@@ -94,7 +94,7 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
   const updateComment = async (data) => {
     // console.log(data,"inside - 95")
     if (task) {
-      console.log(task , "--- inside updaye - 97")
+      // console.log(task , "--- inside updaye - 97")
       const info = {
         commentId: data.comId,
         text: data.text,

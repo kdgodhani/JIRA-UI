@@ -25,7 +25,7 @@ export const Tasks = () => {
 
   const { isLoading, tasks, totalTasks } = useSelector((store) => store.allTasks);
 
-  console.log(tasks,"this is task --- ")
+  // console.log(tasks,"this is task --- ")
 
   useEffect(() => {
     dispatch(getAllTasks());

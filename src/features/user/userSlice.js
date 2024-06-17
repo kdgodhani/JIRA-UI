@@ -32,7 +32,7 @@ const userSlice = createSlice({
     },
     setDashboardText: (state, { payload }) => {
       state.dashBoardText = payload;
-      console.log("dashboardtext" + state.dashBoardText);
+      // console.log("dashboardtext" + state.dashBoardText);
     },
   },
   extraReducers: (builder) => {
@@ -44,7 +44,7 @@ const userSlice = createSlice({
       .addCase(registerUser.fulfilled, (state, { payload }) => {
         const user = payload.data[0];
 
-        console.log(user ,"this is full fill sucess ---- ")
+        // console.log(user ,"this is full fill sucess ---- ")
         state.isLoading = false;
         state.user = user;
         addUserToLocalStorage(user);
@@ -99,9 +99,9 @@ const userSlice = createSlice({
             ""
           )
         );
-        console.log(payload,"inside - 102");
+        // console.log(payload,"inside - 102");
         const url = "data:image/jpeg;base64," + base64Image;
-        console.log(url);
+        // console.log(url);
         state.userImage = url;
       })
       .addCase(getUserImage.rejected, (state, { payload }) => {

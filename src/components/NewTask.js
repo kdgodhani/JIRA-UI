@@ -23,8 +23,8 @@ const NewTask = ({
 }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
-    console.log("Title:", title); // Debug log
-    console.log("Assignee:", assignee); // Debug log
+    // console.log("Title:", title); // Debug log
+    // console.log("Assignee:", assignee); // Debug log
 
     if (!title || !assignee) {
       toast.error("please complete all fields");
@@ -80,7 +80,7 @@ const NewTask = ({
                   id="assignee"
                   value={assignee}
                   onChange={(event) => {
-                    console.log("Selected assignee:", event.target.value); // Debug log
+                    // console.log("Selected assignee:", event.target.value); // Debug log
                     setAssignee(event.target.value);
                   }}
                   className="form__select"

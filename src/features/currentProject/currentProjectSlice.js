@@ -69,7 +69,7 @@ export const createTask = createAsyncThunk(
       projectId: task.projectId,
     };
 
-    console.log(tasks, "task va;ue -86 ");
+    // console.log(tasks, "task va;ue -86 ");
 
     let url = `projects/tasks/create`;
 
@@ -239,7 +239,7 @@ const currentProjectSlice = createSlice({
     },
     getCurrentProject: (state) => {
       return state;
-      console.log(state);
+      // console.log(state);
     },
     /* clearFilters: (state) => {
       return { ...state, ...initialFiltersState };

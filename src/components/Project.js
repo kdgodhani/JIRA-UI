@@ -69,10 +69,11 @@ const Project = ({
         const data = await response.json();
         setTasks(data.data);
       } else {
-        console.log('Error fetching tasks:', response.message);
+        // console.log('Error fetching tasks:', response.message);
       }
     } catch (error) {
-      console.log('Error fetching tasks:', error.message);
+      
+      // console.log('Error fetching tasks:', error.message);
     }
   };
 
