@@ -8,7 +8,6 @@ import { MDBBtn, MDBCardImage, MDBCol, MDBRow } from "mdb-react-ui-kit";
 import { MDBCard, MDBCardBody, MDBCardText, MDBCardTitle } from "mdbreact";
 import { useEffect } from "react";
 import {
-  getUserParticipationProjects,
   setDashboardText,
 } from "../features/user/userSlice";
 import { getAllTasks } from "../features/tasks/allTasksSlice";

@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { toast } from "react-toastify";
 import {
-  getUserParticipationProjects,
+  // getUserParticipationProjects,
   setDashboardText,
   updateUser,
 } from "../../features/user/userSlice";
@@ -44,7 +44,7 @@ const Profile = () => {
     dispatch(getAllTasks());
     dispatch(getAllProjects());
     getUserImage(getUserFromLocalStorage().id);
-    dispatch(getUserParticipationProjects());
+    // dispatch(getUserParticipationProjects());
   }, []);
 
   const [formIsOpen, setFormIsOpen] = useState(false);
@@ -65,24 +65,64 @@ const Profile = () => {
     setImageUrl(e.target.files[0]);
   }
 
-  function updateImage() {
-    const data = new FormData();
-    data.append("image", imageUrl);
+  // function updateImage() {
+  //   const userId = getUserFromLocalStorage().id;
+
+  //   const data = new FormData();
+  //   data.append("image", imageUrl);
+
+  //   // here add image functionality 
+  //   axios.post(`${urlBase}user/addUpdateImage?id=${userId}`, data).then(
+  //     (res) => {
+  //       toast.success("The image has been updated");
+  //       toggleForm();
+  //       getUserImage(getUserFromLocalStorage().id);
+  //     },
+  //     () => {
+  //       toast.error("The image has not been updated");
+  //     }
+  //   );
+  // }
+
+  function updateImage(imageFile) {
     const userId = getUserFromLocalStorage().id;
-    axios.post(`${urlBase}image/${userId}`, data).then(
-      (res) => {
-        toast.success("The image has been updated");
-        toggleForm();
-        getUserImage(getUserFromLocalStorage().id);
-      },
-      () => {
-        toast.error("The image has not been updated");
-      }
-    );
+  
+    const reader = new FileReader();
+    reader.readAsDataURL(imageFile);
+    reader.onloadend = () => {
+      const base64String = reader.result
+      // .split(',')[1];
+  
+      const data = {
+        image: base64String,
+        userId: userId,
+      };
+  
+      axios.post(`${urlBase}user/addUpdateImage`, data).then(
+        (res) => {
+          toast.success("The image has been updated");
+          toggleForm();
+          getUserImage(userId);
+        },
+        () => {
+          toast.error("The image has not been updated");
+        }
+      );
+    };
   }
+
+    const handleSubmit = () => {
+    if (imageUrl) {
+      updateImage(imageUrl);
+    } else {
+      toast.error("No file selected");
+    }
+  };
+
   const [url, setUrl] = useState(userIcon);
+
   function getUserImage(id) {
-    fetch(`${urlBase}/image/info/${id}`)
+    fetch(`${urlBase}user/getImage?userId=${id}`)
       .then((response) => {
         if (response.ok) return response.blob();
         return;
@@ -154,7 +194,8 @@ const Profile = () => {
                     position: "relative",
                     backgroundColor: "initial",
                   }}
-                  onClick={updateImage}
+                  // onClick={updateImage}
+                  onClick={handleSubmit}
                 >
                   <MdDone
                     style={{

@@ -99,7 +99,7 @@ const userSlice = createSlice({
             ""
           )
         );
-        console.log(payload);
+        console.log(payload,"inside - 102");
         const url = "data:image/jpeg;base64," + base64Image;
         console.log(url);
         state.userImage = url;
@@ -109,18 +109,18 @@ const userSlice = createSlice({
         toast.error(payload && payload.message?payload.message:"Server Error");
       })
 
-      .addCase(getUserParticipationProjects.pending, (state) => {
-        state.isLoading = true;
-      })
-      .addCase(getUserParticipationProjects.fulfilled, (state, { payload }) => {
-        state.isLoading = false;
+      // .addCase(getUserParticipationProjects.pending, (state) => {
+      //   state.isLoading = true;
+      // })
+      // .addCase(getUserParticipationProjects.fulfilled, (state, { payload }) => {
+      //   state.isLoading = false;
 
-        state.userParticipationProjects = payload.data.projects;
-      })
-      .addCase(getUserParticipationProjects.rejected, (state, { payload }) => {
-        state.isLoading = false;
-         toast.error(payload && payload.message?payload.message:"Server Error");
-      });
+      //   state.userParticipationProjects = payload.data.projects;
+      // })
+      // .addCase(getUserParticipationProjects.rejected, (state, { payload }) => {
+      //   state.isLoading = false;
+      //    toast.error(payload && payload.message?payload.message:"Server Error");
+      // });
   },
 });
 
@@ -167,19 +167,19 @@ export const getUserImage = createAsyncThunk(
   }
 );
 
-export const getUserParticipationProjects = createAsyncThunk(
-  "user/participationProjects",
-  async (_, thunkAPI) => {
-    const userId = getUserFromLocalStorage().id;
-    try {
-      const resp = await customFetch.get(`/utilisateurs/${userId}/projects`);
+// export const getUserParticipationProjects = createAsyncThunk(
+//   "user/participationProjects",
+//   async (_, thunkAPI) => {
+//     const userId = getUserFromLocalStorage().id;
+//     try {
+//       const resp = await customFetch.get(`/utilisateurs/${userId}/projects`);
 
-      return resp.data;
-    } catch (error) {
-      return thunkAPI.rejectWithValue(error.response.data);
-    }
-  }
-);
+//       return resp.data;
+//     } catch (error) {
+//       return thunkAPI.rejectWithValue(error.response.data);
+//     }
+//   }
+// );
 
 const { logoutUser } = userSlice.actions;
 export const clearStore = createAsyncThunk(

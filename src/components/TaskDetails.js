@@ -259,8 +259,8 @@ function TaskDetails({ taskId, manager = true, toggleModal, handleCardClick }) {
             onChange={handlePriorityChange}
             style={{
               padding: "5px",
-              backgroundColor: priority === "high" ? "red" : priority === "medium" ? "yellow" : "green",
-              color: priority === "medium" ? "black" : "white",
+              backgroundColor: priority == "low" ? "green" : priority === "medium" ? "yellow" : "red",
+              color: priority == "medium" ? "black" : "white",
               border: "none",
               borderRadius: "4px",
               marginTop: "5px", // Add margin to separate from the previous box

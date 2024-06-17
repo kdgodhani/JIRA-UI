@@ -333,7 +333,7 @@ const currentProjectSlice = createSlice({
         const task = payload.data;
         state.tasks = [...state.tasks, task];
 
-        toast.success("task created successfully");
+        toast.success("task delted successfully");
       })
       .addCase(deleteTask.rejected, (state, { payload }) => {
         state.isLoading = false;
